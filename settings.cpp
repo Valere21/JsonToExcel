@@ -7,13 +7,9 @@ Settings::Settings()
 }
 
 QStringList Settings::getSettings(){
+    qDebug() << "group" << m_settings.fileName();
     for (int i = 0; i < m_settings.allKeys().size(); i++)
-        qDebug() << m_settings.allKeys().at(i);
-    //    m_settings.remove("pathJSON");
-    //    m_settings.remove("pathExcel");
-    //    m_settings.clear();
-    //    m_settings.setValue("C:/JSONbrut/FolderExcel/", "pathEXCEL");
-    //    m_settings.setValue("C:/JSONbrut/Safe/" , "pathJSON");
+        qDebug() << "SETTINGS " << i  << ' ' << m_settings.allKeys().at(i);
     return m_settings.allKeys();
 }
 

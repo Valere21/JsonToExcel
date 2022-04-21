@@ -12,7 +12,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     getPath();
 }
 
-bool MainWindow::askSettings(){
+bool MainWindow::askSettings(){                                 //fonction permettant de recuperer les chemins des dossier JSON a modifier + dossier Excel, depuis le fichier de sauvegarde
     bool flag = false;
     QMessageBox msgBox;
     msgBox.setText("Utiliser les parametres par defaut ?");
@@ -44,7 +44,6 @@ void MainWindow::setPath(){
 }
 
 void MainWindow::getPath(){     //Recupere le path des fichiers JSON selectionee
-
     if (!settings->getSettings().isEmpty()){
         if (!askSettings()){
             m_folderJSON.setPath(settings->getSettings().at(1));
@@ -201,8 +200,8 @@ void MainWindow::executePythonScript(){     //Execute le script python, pas de p
     m_processPythonScript = new QProcess();
     QString command = ("python.exe");
     QStringList argument;
-        argument.append("main.py");
-//    argument.append("C:\\PycharmProjects\\extractDataJSON\\main.py");       //0
+//        argument.append("main.py");
+    argument.append("C:\\PycharmProjects\\extractDataJSON\\main.py");       //0
     QString argPathFolderModi = m_folderModifiedJSON.path() + '/';
     argument.append(argPathFolderModi);                                     //1
     argument.append(m_folderExcel + '/');                                         //2
