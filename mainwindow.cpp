@@ -13,7 +13,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
 }
 
 bool MainWindow::askSettings(){                                 //fonction permettant de recuperer les chemins des dossier JSON a modifier + dossier Excel, depuis le fichier de sauvegarde
-    bool flag = false;
+    bool flag = true;
     QMessageBox msgBox;
     msgBox.setText("Utiliser les parametres par defaut ?");
     msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
@@ -21,7 +21,12 @@ bool MainWindow::askSettings(){                                 //fonction perme
     msgBox.exec();
     if (msgBox.exec() == QMessageBox::No){
         setPath();
+        flag = false;
+        qDebug() << "SETTINGS non utilisées";
+    }
+    else {
         flag = true;
+        qDebug() <<  "SETTINGS utilisées";
     }
     return flag;
 }
@@ -45,9 +50,12 @@ void MainWindow::setPath(){
 
 void MainWindow::getPath(){     //Recupere le path des fichiers JSON selectionee
     if (!settings->getSettings().isEmpty()){
-        if (!askSettings()){
-            m_folderJSON.setPath(settings->getSettings().at(1));
-            m_folderExcel = settings->getSettings().at(0);
+        if (askSettings()){
+            qDebug() << "PATH JSON 1" << settings->getSettings().value(1);
+            qDebug() << "PATH EXCEL 0" << settings->getSettings().value(0);
+
+            m_folderJSON.setPath(settings->getSettings().value(1));
+            m_folderExcel = settings->getSettings().value(0);
         }
     }
     else {
@@ -200,8 +208,8 @@ void MainWindow::executePythonScript(){     //Execute le script python, pas de p
     m_processPythonScript = new QProcess();
     QString command = ("python.exe");
     QStringList argument;
-//    argument.append("main.py");
-    argument.append("C:\\PycharmProjects\\extractDataJSO:N\\main.py");       //0
+    //    argument.append("main.py");
+    argument.append("C:\\PycharmProjects\\extractDataJSON\\main.py");       //0
     QString argPathFolderModi = m_folderModifiedJSON.path() + '/';
     argument.append(argPathFolderModi);                                     //1
     argument.append(m_folderExcel + '/');                                         //2
@@ -218,7 +226,7 @@ void MainWindow::executePythonScript(){     //Execute le script python, pas de p
     //    while(m_processPythonScript->state() == QProcess::Running){
     //    }
     qDebug() << "NO RUNNING";
-    this->~MainWindow();
+//    this->~MainWindow();
 }
 
 
@@ -226,19 +234,20 @@ MainWindow::~MainWindow()
 {
     qDebug() << "in";
     delete dialog;
-    delete settings;
     delete m_fileJSON;
     delete m_fileJSONModified;
     delete m_processPythonScript;
     delete m_listWidgetItem;
     delete settings;
     delete ui;
+    delete settings;
+    qDebug() << "About to quit";
+    QApplication::quit();
     exit(0);
 }
 
 
 void MainWindow::on_MainWindow_destroyed()
 {
-    QApplication::quit();
     this->~MainWindow();
 }
