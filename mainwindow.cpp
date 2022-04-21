@@ -200,8 +200,8 @@ void MainWindow::executePythonScript(){     //Execute le script python, pas de p
     m_processPythonScript = new QProcess();
     QString command = ("python.exe");
     QStringList argument;
-//        argument.append("main.py");
-    argument.append("C:\\PycharmProjects\\extractDataJSON\\main.py");       //0
+//    argument.append("main.py");
+    argument.append("C:\\PycharmProjects\\extractDataJSO:N\\main.py");       //0
     QString argPathFolderModi = m_folderModifiedJSON.path() + '/';
     argument.append(argPathFolderModi);                                     //1
     argument.append(m_folderExcel + '/');                                         //2
@@ -215,8 +215,8 @@ void MainWindow::executePythonScript(){     //Execute le script python, pas de p
     m_processPythonScript->start();
     int status = m_processPythonScript->exitStatus();
     qDebug() << "valeur sortie:" << status;
-//    while(m_processPythonScript->state() == QProcess::Running){
-//    }
+    //    while(m_processPythonScript->state() == QProcess::Running){
+    //    }
     qDebug() << "NO RUNNING";
     this->~MainWindow();
 }
