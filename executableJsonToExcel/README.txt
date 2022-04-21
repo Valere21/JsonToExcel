@@ -1,0 +1,1 @@
+    version officiellement fonctionelle SANS réecriture des settings sur demande (obliger de supprimer manuellement depuis l'éditeur de registre windows)
