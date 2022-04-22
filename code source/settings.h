@@ -8,8 +8,8 @@ public:
     Settings();
     QStringList getSettings();
     void setSettings(QString pathJsonFolder, QString pathExcelFolder);
-
-    ~Settings();
+    void removeSettings();
+//    ~Settings();
 private:
     QSettings m_settings;
 

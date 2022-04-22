@@ -45,7 +45,7 @@ public slots:
 
 private slots:
     void on_MainWindow_destroyed();
-
+    void sl_onProcessStateChanged();
 private:
         Ui::MainWindow *ui = nullptr;
     Dialog *dialog = nullptr;

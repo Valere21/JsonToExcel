@@ -7,7 +7,6 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     ui->progressBar->setValue(0);
     this->setWindowTitle("Modification des fichiers JSON en cours");
     show();
-
     settings = new Settings;
     getPath();
 }
@@ -17,10 +16,10 @@ bool MainWindow::askSettings(){                                 //fonction perme
     QMessageBox msgBox;
     msgBox.setText("Utiliser les parametres par defaut ?");
     msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-    //    msgBox.setDefaultButton(QMessageBox::Yes);
-    msgBox.exec();
     if (msgBox.exec() == QMessageBox::No){
+        settings->removeSettings();
         setPath();
+        settings->setSettings(m_folderJSON.path() + '/',m_folderExcel);
         flag = false;
         qDebug() << "SETTINGS non utilisées";
     }
@@ -208,8 +207,8 @@ void MainWindow::executePythonScript(){     //Execute le script python, pas de p
     m_processPythonScript = new QProcess();
     QString command = ("python.exe");
     QStringList argument;
-        argument.append("main.py");
-//    argument.append("C:\\PycharmProjects\\extractDataJSON\\main.py");       //0
+    //        argument.append("main.py");
+    argument.append("C:\\PycharmProjects\\extractDataJSON\\main.py");       //0
     QString argPathFolderModi = m_folderModifiedJSON.path() + '/';
     argument.append(argPathFolderModi);                                     //1
     argument.append(m_folderExcel + '/');                                         //2
@@ -219,35 +218,34 @@ void MainWindow::executePythonScript(){     //Execute le script python, pas de p
 
     m_processPythonScript->setProgram(command);
     m_processPythonScript->setArguments(argument);
-
     m_processPythonScript->start();
-    int status = m_processPythonScript->exitStatus();
-    qDebug() << "valeur sortie:" << status;
-    //    while(m_processPythonScript->state() == QProcess::Running){
-    //    }
-    qDebug() << "NO RUNNING";
-//    this->~MainWindow();
+    connect(m_processPythonScript, SIGNAL(stateChanged(QProcess::ProcessState)), this, SLOT(sl_onProcessStateChanged()));
 }
 
+void MainWindow::sl_onProcessStateChanged(){
+    qDebug() << "PYTHON FINISHED";
+    this->~MainWindow();
+}
+
+void MainWindow::on_MainWindow_destroyed()
+{
+    this->~MainWindow();
+}
 
 MainWindow::~MainWindow()
 {
     qDebug() << "in";
     delete dialog;
+    delete settings;
     delete m_fileJSON;
     delete m_fileJSONModified;
-    delete m_processPythonScript;
     delete m_listWidgetItem;
-    delete settings;
     delete ui;
-    delete settings;
+
+    delete m_processPythonScript;
     qDebug() << "About to quit";
     QApplication::quit();
     exit(0);
 }
 
 
-void MainWindow::on_MainWindow_destroyed()
-{
-    this->~MainWindow();
-}

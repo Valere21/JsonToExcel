@@ -2,14 +2,18 @@
 
 Settings::Settings()
 {
-    //    QSettings m_settings("C://scriptExcelJsonSettings//configVariable.ini", QSettings::IniFormat);
-    QSettings m_settings("QApplication::applicationDirPath() + configVariable.ini", QSettings::IniFormat);
+//    QSettings m_settings("QApplication::applicationDirPath() + configVariable.ini", QSettings::IniFormat);
+    QSettings m_settings("", QSettings::IniFormat);
 }
+
+//Settings::~Settings(){
+////    delete this;
+//}
 
 QStringList Settings::getSettings(){
     QStringList pathValue;
     if (!m_settings.allKeys().isEmpty()){
-        qDebug() << "pas de settings détecté";
+        qDebug() << "settings détecté";
         pathValue.append(m_settings.value(m_settings.allKeys().at(0)).toString());
         pathValue.append(m_settings.value(m_settings.allKeys().at(1)).toString());
     }
@@ -27,6 +31,10 @@ void Settings::setSettings(QString pathJsonFolder, QString pathExcelFolder){
     qDebug() << "m_settings.status()" << m_settings.status();
 }
 
-Settings::~Settings(){
-    //    delete this;
+
+void Settings::removeSettings(){
+
+    m_settings.remove("");
+    m_settings.remove("pathEXCEL");
+    m_settings.remove("pathEXCEL");
 }
