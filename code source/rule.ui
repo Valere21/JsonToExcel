@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>486</width>
-    <height>144</height>
+    <width>349</width>
+    <height>114</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -22,15 +22,70 @@
         <widget class="QComboBox" name="listVar"/>
        </item>
        <item>
-        <widget class="QComboBox" name="listRule"/>
-       </item>
-       <item>
-        <layout class="QVBoxLayout" name="verticalLayout_4">
+        <widget class="QComboBox" name="listRule">
          <item>
-          <widget class="QDoubleSpinBox" name="constRes"/>
+          <property name="text">
+           <string>NaN</string>
+          </property>
          </item>
          <item>
+          <property name="text">
+           <string>0</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>1</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>=</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>&lt;</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>&gt;</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>&lt;=</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>&gt;=</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item>
+        <layout class="QGridLayout" name="gridLayout">
+         <item row="0" column="0">
+          <widget class="QDoubleSpinBox" name="constRes"/>
+         </item>
+         <item row="1" column="0">
           <widget class="QComboBox" name="listVarRes"/>
+         </item>
+         <item row="0" column="1">
+          <widget class="QCheckBox" name="getConst">
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QCheckBox" name="getVar">
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
          </item>
         </layout>
        </item>

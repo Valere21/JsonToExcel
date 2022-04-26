@@ -1,6 +1,8 @@
 #include "dialog.h"
 #include "ui_dialog.h"
 
+class Rule;
+
 Dialog::Dialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::Dialog)
@@ -16,61 +18,55 @@ Dialog::~Dialog()
 }
 
 void Dialog::sl_getListVar(QString list){
-    qDebug() << "HERE" << list;
-    m_listVar = list;
+    m_listVarData = list.split(',');
     splitList();
 }
 
 void Dialog::splitList(){
-    while (m_listVar.contains(':')){
-        //        qDebug() << "while" << m_listVar;
-        QString *data = new QString (m_listVar.left(m_listVar.indexOf(':')));
-        ui->listWidget->addItem(*data);
-
-        delete data;
-        data = nullptr;
-        if (m_listVar.contains(','))
-            m_listVar = m_listVar.remove(0,m_listVar.indexOf(',')+1);
-        else
-            break;
+    for (int i = 0; i < m_listVarData.size(); i++){
+        m_listVar.append(m_listVarData.at(i).left(m_listVarData.at(i).indexOf(':')));
+        ui->listWidget->addItem(m_listVar.at(i));
     }
 }
 
 void Dialog::on_buttonBox_accepted()
 {
-    if  (!m_listVar.isEmpty())
-        m_listVar.clear();
-
-    if  (!m_realListVar.isEmpty())
-        m_realListVar.clear();
-
+    QStringList listSelected;
     for (int i = 0; i < ui->listWidget->count(); i++){
         if (ui->listWidget->item(i)->isSelected()){
-            m_listVar += ui->listWidget->item(i)->text();
-            m_realListVar += ui->listWidget->item(i)->text();
+            listSelected += ui->listWidget->item(i)->text();
         }
     }
-    qDebug() << "m_listVar" << m_listVar;
-    qDebug() << "m_listVar size" << m_listVar.size();
-
-//    emit si_sendSelectedVar(m_listVar);
-    emit si_sendSelectedVar(m_realListVar);
-
+    emit si_sendSelectedVar(listSelected);
 }
 
 
 void Dialog::on_pushButton_clicked()
 {
-    if  (!m_listVar.isEmpty())
-        m_listVar.clear();
+    QStringList listSelected;
     for (int i = 0; i < ui->listWidget->count(); i++){
-    m_listVar += ui->listWidget->item(i)->text();
-    m_realListVar += ui->listWidget->item(i)->text();
-
+        listSelected += ui->listWidget->item(i)->text();
     }
-    emit si_sendSelectedVar(m_realListVar);
+    emit si_sendSelectedVar(listSelected);
 }
 
+void Dialog::on_addRule_clicked()
+{
+    if (ui_rule){
+        delete ui_rule;
+        ui_rule = nullptr;
+    }
+
+    connect(ui_rule, SIGNAL(si_sendRuleFilled(QString, int, Rule::t_option)), this, SLOT(sl_getRuleFilled(QString, int, Rule::t_option)));
+    ui_rule = new Rule(m_listVar);
+}
+
+void Dialog::sl_getRuleFilled(QString var, int rule, Rule::t_option option){
+    qDebug() << Q_FUNC_INFO << "aAAAAAAAAAAAAA";
+    qDebug() << option.name;
+//    Rule *newRule = new Rule(var,rule,option);
+//    delete newRule;
+}
 
 void Dialog::on_buttonBox_rejected()
 {

@@ -1,162 +1,13 @@
 #include "mainwindow.h"
-#include "ui_mainwindow.h"
-#include <QMessageBox>
+
 MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWindow){
     ui->setupUi(this);
     ui->progressBar->setRange(0,100);
     ui->progressBar->setValue(0);
     this->setWindowTitle("Modification des fichiers JSON en cours");
     show();
-    settings = new Settings;
+    ui_settings = new Settings;
     getPath();
-}
-
-bool MainWindow::askSettings(){                                 //fonction permettant de recuperer les chemins des dossier JSON a modifier + dossier Excel, depuis le fichier de sauvegarde
-    bool flag = true;
-    QMessageBox msgBox;
-    msgBox.setText("Utiliser les parametres par defaut ?");
-    msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-    if (msgBox.exec() == QMessageBox::No){
-        settings->removeSettings();
-        setPath();
-        settings->setSettings(m_folderJSON.path() + '/',m_folderExcel);
-        flag = false;
-        qDebug() << "SETTINGS non utilisées";
-    }
-    else {
-        flag = true;
-        qDebug() <<  "SETTINGS utilisées";
-    }
-    return flag;
-}
-
-void MainWindow::setPath(){
-    m_folderJSON.setPath(QFileDialog::getExistingDirectory(0, ("Select folder wich contains JSON file"), QDir::currentPath()));
-    if (m_folderJSON.path().isNull() || m_folderJSON.isEmpty()){
-        QMessageBox msgBox;
-        msgBox.setText("Dossier vide");
-        msgBox.exec();
-        this->~MainWindow();
-    }
-    m_folderExcel = QFileDialog::getExistingDirectory(0, ("Select a folder for the excel"), QDir::currentPath()); m_folderExcel.append('/');
-    if (m_folderExcel.isNull()){
-        QMessageBox msgBox;
-        msgBox.setText("Erreur avec le dossier");
-        msgBox.exec();
-        this->~MainWindow();
-    }
-}
-
-void MainWindow::getPath(){     //Recupere le path des fichiers JSON selectionee
-    if (!settings->getSettings().isEmpty()){
-        if (askSettings()){
-            m_folderJSON.setPath(settings->getSettings().value(1));
-            m_folderExcel = settings->getSettings().value(0);
-        }
-    }
-    else {
-        setPath();
-        settings->setSettings(m_folderJSON.path() + '/',m_folderExcel);
-    }
-    m_listJSON = m_folderJSON.entryList(QDir::Files, QDir::Name);
-    m_folderModifiedJSON.setPath(QApplication::applicationDirPath() + "/tempJSON\\");
-    if (m_folderModifiedJSON.exists())
-        m_folderModifiedJSON.removeRecursively();
-    m_folderModifiedJSON.mkdir(QApplication::applicationDirPath() + "/tempJSON\\");
-    if (!m_folderModifiedJSON.exists())
-        qDebug() << "probleme de creation dossier JSON modifie (AKA tempJSON)";
-    for (int i = 0; i < m_listJSON.size(); i++) m_listJSON[i] = m_folderJSON.path() + '/' + m_listJSON[i];
-
-    getVar();
-}
-
-int getNbrVar(QString pathToJson){                          //Renvoie le nombre de variable contenue dans ce fichier JSON "pathToJson"
-
-    QFile *fileJSON = new QFile(pathToJson);
-    QString *allData = new QString;                  //Contient toute les donnees JSON
-    if (fileJSON ->exists()){                           //Ouvre les fichiers afin de manipuler leurs donnee
-        if (!fileJSON ->isOpen()){                              //Verifie que le fichier existe
-            fileJSON ->open(QIODevice::ReadWrite);
-        }
-
-        *allData = fileJSON ->readAll();                       //Permet des manipulations sur les données des fichiers JSON
-        *allData = allData->remove('\\');                               //Enlèvre les '\'
-        *allData = allData->remove(0,1);                        // Enleve le premier char car c'est un {. Le second { est celui qui nous interesse car il est place juste avant un " e enlever
-
-        *allData = allData->mid(allData->indexOf('{')+1,-1);       //Recupere les donnees contenues dans la balise content du fichier JSON.
-        *allData = allData->left(allData->indexOf('}')+1);
-    }
-    int size = allData->split(',').size();
-    delete allData;
-    delete fileJSON;
-    allData = nullptr;
-    fileJSON = nullptr;
-    return size;
-}
-
-void MainWindow::getVar(){              //Fonction permettant d'isoler les variables selectionnes par l'utilisateur (oui c'est un copie coller de la fonction format file, oui c'est pas opti, oui c'est moche, c'est moche hein)
-    dialog = new Dialog;
-    connect (dialog, SIGNAL(si_quitApp()), this, SLOT(sl_quitApp()));
-    connect(this, SIGNAL(si_sendListVar(QString)), dialog, SLOT(sl_getListVar(QString)));
-    connect (dialog, SIGNAL(si_sendSelectedVar(QStringList)), this, SLOT(sl_getSelectedVar(QStringList)));
-
-    if (m_listJSON.isEmpty()){
-        qDebug() << "mlistJSON empty";
-        this->~MainWindow();
-    }
-    int indexFileMaxVar = 0;                                        //Permet d'isoler le fichier JSON avec le plus de variables
-    for (int i = 0;  i < m_listJSON.size(); i++){
-        if (getNbrVar(m_listJSON.at(indexFileMaxVar)) > getNbrVar(m_listJSON.at(i)))
-            indexFileMaxVar = i;
-    }
-    qDebug() <<  "fichier n°" << indexFileMaxVar;
-    m_fileJSON = new QFile(m_listJSON.at(indexFileMaxVar));
-    if (m_fileJSON->exists()){                           //Ouvre les fichiers afin de manipuler leurs donnee
-        QString *allData = new QString;                  //Contient toute les donnees JSON
-        QString *midData = new QString;                 //Contient les donnees corriges () et "
-        QString *varData = new QString;                                //Contient uniquement les variables contenu dans la balise "content" des fichiers JSON
-        if (!m_fileJSON->isOpen()){                              //Verifie que le fichier existe
-            m_fileJSON->open(QIODevice::ReadWrite);
-        }
-
-        *allData = m_fileJSON->readAll();                       //Permet des manipulations sur les données des fichiers JSON
-        *allData = allData->remove('\\');                               //Enlèvre les '\'
-        *midData = allData->remove(0,1);                        // Enleve le premier char car c'est un {. Le second { est celui qui nous interesse car il est place juste avant un " e enlever
-
-        *varData = midData->mid(midData->indexOf('{'),-1);       //Recupere les donnees contenues dans la balise content du fichier JSON.
-        *varData = varData->left(varData->indexOf('}')+1);
-        emit si_sendListVar(*varData);
-
-        delete m_fileJSON;
-        m_fileJSON = nullptr;
-
-        delete allData;
-        allData = nullptr;
-
-        delete midData;
-        midData = nullptr;
-    }
-    else
-        qDebug() << "does not exist";
-}
-
-void MainWindow::sl_getSelectedVar(QStringList list){
-    delete dialog;
-    dialog = nullptr;
-    formatFile(list);
-}
-
-QString getVarData(QStringList listSelectedVar, QStringList listAllVar){
-    QString strVarDataSelect;
-    for (int i = 0; i < listAllVar.size(); i++){
-        for (int j = 0; j < listSelectedVar.size(); j++){
-            if (listAllVar.at(i).contains(listSelectedVar.at(j))){
-                strVarDataSelect.append(listAllVar.at(i));
-            }
-            else ;
-        }
-    }
-    return strVarDataSelect;
 }
 
 void MainWindow::formatFile(QStringList listSelectedVar){                                                          //Fonction permettant d'enlever les \ en trop dans les fichiers JSON ainsi que les 2 " présent. Cette modification est necessaire pour que le scirpt python fonctionne correctement
@@ -164,13 +15,28 @@ void MainWindow::formatFile(QStringList listSelectedVar){                       
     for (int i = 0; i < m_listJSON.size(); i++){                                                                    //Boucle permettant de traiter tous les fichiers JSON selectionees
         m_fileJSON = new QFile(m_listJSON.at(i));
         if (m_fileJSON->exists()){                                                                                  //Ouvre les fichiers afin de manipuler leurs donnees
+            if (!m_fileJSON->isOpen()){                                                                             //Verifie que le fichier existe
+                m_fileJSON->open(QIODevice::ReadWrite);
+            }
+
             QString *allData = new QString;                                                                         //Contient toute les donnees JSON
             QString *midData = new QString;                                                                         //Contient les donnees corriges () et ", et les donnees selectionnees par l'utilsateur
             QString *varData = new QString;                                                                         //Contient uniquement les variables contenu dans la balise "content" des fichiers JSON
 
-            if (!m_fileJSON->isOpen()){                                                                             //Verifie que le fichier existe
-                m_fileJSON->open(QIODevice::ReadWrite);
-            }
+            QString *all = new QString(m_fileJSON->readAll());
+            QString *var = new QString;
+
+            *all = all->remove(0,1);
+            *all = all->remove('\\');
+            *var = all->mid(all->indexOf(('{')),-1);
+            *var = all->left(all->indexOf(('}')));
+            *all = all->left(all->indexOf(('{')));
+            *all += all->rightRef(all->indexOf(('}')));
+
+//            qDebug() << "VAR " << *var;
+//            qDebug() << "ALL " << *all;
+
+
             *allData = m_fileJSON->readAll();                                                                       //Permet des manipulations sur les données des fichiers JSON
             *allData = allData->remove('\\');                                                                       //Enleve les '\'
 
@@ -282,8 +148,8 @@ void MainWindow::on_MainWindow_destroyed()
 MainWindow::~MainWindow()
 {
     qDebug() << "in";
-    delete dialog;
-    delete settings;
+    delete ui_dialog;
+    delete ui_settings;
     delete m_fileJSON;
     delete m_fileJSONModified;
     delete m_listWidgetItem;

@@ -4,14 +4,18 @@
 #include <QListWidgetItem>
 #include <QMainWindow>
 #include <QFileDialog>
+#include <QMessageBox>
 #include <QProcess>
 #include <QDebug>
 #include <QPair>
 #include <QFile>
 #include <QDir>
 
+#include "rule.h"
 #include "dialog.h"
 #include "settings.h"
+#include "ui_mainwindow.h"
+
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -48,9 +52,10 @@ private slots:
     void sl_onProcessStateChanged();
 private:
         Ui::MainWindow *ui = nullptr;
-    Dialog *dialog = nullptr;
-    Settings *settings = nullptr;
+    Dialog *ui_dialog = nullptr;
+    Settings *ui_settings = nullptr;
 
+    Rule **m_listRule = nullptr;
 
     QFile *m_fileJSON = nullptr;
     QFile *m_fileJSONModified = nullptr;
