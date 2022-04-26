@@ -16,7 +16,7 @@ Dialog::~Dialog()
 }
 
 void Dialog::sl_getListVar(QString list){
-    qDebug() << "HERE";
+    qDebug() << "HERE" << list;
     m_listVar = list;
     splitList();
 }
@@ -35,8 +35,6 @@ void Dialog::splitList(){
             break;
     }
 }
-
-
 
 void Dialog::on_buttonBox_accepted()
 {

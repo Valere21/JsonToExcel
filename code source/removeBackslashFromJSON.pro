@@ -12,16 +12,19 @@ SOURCES += \
     dialog.cpp \
     main.cpp \
     mainwindow.cpp \
+    rule.cpp \
     settings.cpp
 
 HEADERS += \
     dialog.h \
     mainwindow.h \
+    rule.h \
     settings.h
 
 FORMS += \
     dialog.ui \
-    mainwindow.ui
+    mainwindow.ui \
+    rule.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
