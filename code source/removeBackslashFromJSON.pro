@@ -11,6 +11,7 @@ CONFIG += c++11
 SOURCES += \
     dialog.cpp \
     main.cpp \
+    mainRefactor.cpp \
     mainSelectVar.cpp \
     mainSetting.cpp \
     mainwindow.cpp \

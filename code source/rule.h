@@ -5,12 +5,32 @@
 #include <QDebug>
 #include <QMessageBox>
 
-class Dialog;
-
 namespace Ui {
 class Rule;
 }
 
+enum optionSelect {
+    None,
+    Number,
+    Var
+};
+
+enum ruleSelected {
+    NaN,
+    Zero,
+    One,
+    Egal,
+    Inf,
+    Sup,
+    InfEgal,
+    SupEgal
+};
+
+typedef struct OPTION{
+    float val;
+    QString name;
+    optionSelect optionSel;
+}t_option;
 
 class Rule : public QDialog
 {
@@ -18,48 +38,35 @@ class Rule : public QDialog
 
 public:
 
-    typedef struct OPTION{
-        float val;
-        QString name;
-    }t_option;
-
-    enum rule {
-        NaN,
-        Zero,
-        One,
-        Egal,
-        Inf,
-        Sup,
-        InfEgal,
-        SupEgal
-    };
 
     explicit Rule(QStringList listVar, QWidget *parent = nullptr);
-    Rule(QString var, int rule, t_option option);
+    Rule(QString var, ruleSelected rule, t_option option);
     ~Rule();
 
     void setListVar(QStringList list);
 
-    void setVar();
-    void setRule();
-    void setOption();
+    void setVar(QString str){m_var = str;}
+    void setRule(ruleSelected rule){m_rule = rule;}
+    void setOption(t_option option){m_option = option;}
 
 signals:
-    void si_sendRuleFilled(QString var, int rule, t_option option);
+    void si_sendRuleFilled(QString var, ruleSelected rule, t_option option);
 private slots:
 
     void on_listRule_activated(int index);
     void on_buttonBox_accepted();
     void on_getVar_clicked(bool checked);
     void on_getConst_clicked(bool checked);
+    void on_listVar_currentIndexChanged(const QString &arg1);
+    void on_listVarRes_currentIndexChanged(const QString &arg1);
+    void on_constRes_valueChanged(double arg1);
 
 private:
     Ui::Rule *ui;
 
     QString m_var;
-    int m_rule;
+    ruleSelected m_rule;
     t_option m_option;
-
 };
 
 #endif // RULE_H

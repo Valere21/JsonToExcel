@@ -37,6 +37,7 @@ public:
     void addModifiedFile(QString dataModified, QString name);      //Ecrit la version modifi� des fichiers JSON  dans une copie + ajoute le nom du fichier en fct de la date
     void emptyJsonFolder();                                        //Vide le dossier JSONModified une fois le traitement effectuer
     QString removeUnwantedVariable(QString allContentVariable, QStringList listSelected);
+    QStringList parseVar(QString readAll);
 
     ~MainWindow();
 
@@ -46,21 +47,21 @@ signals:
 public slots:
     void sl_getSelectedVar(QStringList);
     void sl_quitApp(){this->~MainWindow();}
+    void sl_getRuleFilled(QString, ruleSelected, t_option);
 
 private slots:
     void on_MainWindow_destroyed();
     void sl_onProcessStateChanged();
 private:
-        Ui::MainWindow *ui = nullptr;
+    Ui::MainWindow *ui = nullptr;
     Dialog *ui_dialog = nullptr;
     Settings *ui_settings = nullptr;
 
-    Rule **m_listRule = nullptr;
+    QList<Rule*> m_listRule;
 
     QFile *m_fileJSON = nullptr;
     QFile *m_fileJSONModified = nullptr;
     QProcess *m_processPythonScript = nullptr;
-    QListWidgetItem *m_listWidgetItem = nullptr;
 
     QDir m_folderJSON;
     QStringList m_listVar;

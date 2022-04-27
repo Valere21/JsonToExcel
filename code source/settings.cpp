@@ -13,7 +13,7 @@ Settings::Settings()
 QStringList Settings::getSettings(){
     QStringList pathValue;
     if (!m_settings.allKeys().isEmpty()){
-        qDebug() << "settings détecté";
+        qDebug() << "settings detectee";
         pathValue.append(m_settings.value(m_settings.allKeys().at(0)).toString());
         pathValue.append(m_settings.value(m_settings.allKeys().at(1)).toString());
     }

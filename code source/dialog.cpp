@@ -1,8 +1,6 @@
 #include "dialog.h"
 #include "ui_dialog.h"
 
-class Rule;
-
 Dialog::Dialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::Dialog)
@@ -56,20 +54,20 @@ void Dialog::on_addRule_clicked()
         delete ui_rule;
         ui_rule = nullptr;
     }
-
-    connect(ui_rule, SIGNAL(si_sendRuleFilled(QString, int, Rule::t_option)), this, SLOT(sl_getRuleFilled(QString, int, Rule::t_option)));
     ui_rule = new Rule(m_listVar);
-}
-
-void Dialog::sl_getRuleFilled(QString var, int rule, Rule::t_option option){
-    qDebug() << Q_FUNC_INFO << "aAAAAAAAAAAAAA";
-    qDebug() << option.name;
-//    Rule *newRule = new Rule(var,rule,option);
-//    delete newRule;
+//    connect(ui_rule, SIGNAL(si_sendRuleFilled(QString, ruleSelected, t_option)), this, SLOT(sl_getRuleFilled(QString, ruleSelected, t_option)));
+    connect(ui_rule, SIGNAL(si_sendRuleFilled(QString, ruleSelected, t_option)), this->parent(), SLOT(sl_getRuleFilled(QString, ruleSelected, t_option)));
 }
 
 void Dialog::on_buttonBox_rejected()
 {
     emit si_quitApp();
 }
+
+
+
+
+
+
+
 

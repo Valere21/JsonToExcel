@@ -7,78 +7,34 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     this->setWindowTitle("Modification des fichiers JSON en cours");
     show();
     ui_settings = new Settings;
-    getPath();
+    getPath();    
 }
 
-void MainWindow::formatFile(QStringList listSelectedVar){                                                          //Fonction permettant d'enlever les \ en trop dans les fichiers JSON ainsi que les 2 " présent. Cette modification est necessaire pour que le scirpt python fonctionne correctement
-    long percent = 0;
-    for (int i = 0; i < m_listJSON.size(); i++){                                                                    //Boucle permettant de traiter tous les fichiers JSON selectionees
-        m_fileJSON = new QFile(m_listJSON.at(i));
-        if (m_fileJSON->exists()){                                                                                  //Ouvre les fichiers afin de manipuler leurs donnees
-            if (!m_fileJSON->isOpen()){                                                                             //Verifie que le fichier existe
-                m_fileJSON->open(QIODevice::ReadWrite);
-            }
+QStringList MainWindow::parseVar(QString readAll){
 
-            QString *allData = new QString;                                                                         //Contient toute les donnees JSON
-            QString *midData = new QString;                                                                         //Contient les donnees corriges () et ", et les donnees selectionnees par l'utilsateur
-            QString *varData = new QString;                                                                         //Contient uniquement les variables contenu dans la balise "content" des fichiers JSON
+    QStringList list;
 
-            QString *all = new QString(m_fileJSON->readAll());
-            QString *var = new QString;
+    QString all(readAll);
+    QString var;
 
-            *all = all->remove(0,1);
-            *all = all->remove('\\');
-            *var = all->mid(all->indexOf(('{')),-1);
-            *var = all->left(all->indexOf(('}')));
-            *all = all->left(all->indexOf(('{')));
-            *all += all->rightRef(all->indexOf(('}')));
+    all = all.remove(0,1);
+    all = all.remove('\\');
 
-//            qDebug() << "VAR " << *var;
-//            qDebug() << "ALL " << *all;
+    var = all.mid(all.indexOf('{')+1,-1);
+    var = var.left(var.indexOf('}')-1);
 
+    all = all.remove(all.indexOf('{')+1,var.size()+1);
+    list.append(var);
+    list.append(all);
 
-            *allData = m_fileJSON->readAll();                                                                       //Permet des manipulations sur les données des fichiers JSON
-            *allData = allData->remove('\\');                                                                       //Enleve les '\'
+    qDebug() << "1 " << list.at(0) << Qt::endl;
+    qDebug() << "2 " << list.at(1)  << Qt::endl;
+    qDebug() << "INSERTION" << list.value(0).insert(all.indexOf('{'),list.value(1));
 
-            *midData = allData->remove(0,1);                                                                        // Enleve le premier char car c'est un {. Le second { est celui qui nous interesse car il est place juste avant un " e enlever
-            *midData = midData->remove(midData->indexOf('{')-1,1);                                                  //Retire le premier "
-            *midData = midData->remove(midData->indexOf('}')+1,1);                                                  //Retire le second "
-
-            *varData = midData->mid(midData->indexOf('{')+1,-1);                                                    //Recupere les donnees contenues dans la balise content du fichier JSON.
-            *varData = varData->left(varData->indexOf('}'));                                                        //........
-            //            qDebug() << "allData" << *varData;
-            //                qDebug() << " NEW : " << getVarData(listSelectedVar,varData->split(','));
-            *allData = removeUnwantedVariable(*varData, listSelectedVar) + midData->right(midData->indexOf('}')+1); //Fonction ne laissant que les variables selectionnees<
-            *midData = midData->left(midData->indexOf('{')+1);                                                      //Manipulation pour ne recuperer que les donnees avant la balise content contenue dans les fichiers JSON
-            midData->append(allData);
-
-            midData->prepend('{');                                                                                  //Rajoute le { enlever en premier lieu
-
-
-            addModifiedFile(*midData,m_listJSON.at(i));                                                             //Appel fct de modification des JSON + enregistrement dans dossier
-            m_fileJSON->close();
-
-            delete varData;
-            varData = nullptr;
-
-            delete m_fileJSON;
-            m_fileJSON = nullptr;
-
-            delete allData;
-            allData = nullptr;
-
-            delete midData;
-            midData = nullptr;
-        }
-        if (((100*i)/m_listJSON.size()) != percent){                                                               //Calcule le pourcentage de fichier JSON modifie
-            percent = (100*i)/m_listJSON.size();
-            ui->progressBar->setValue(percent);
-        }
-    }
-    ui->progressBar->setValue(100);
-    executePythonScript();
-    //    qDebug() << "python script end";
+    return list;
 }
+
+
 
 QString MainWindow::removeUnwantedVariable(QString allContentVariable /*toutes variables JSON*/, QStringList listSelected /*variables JSON selectionees*/){    // Fonction ne laissant que les variables selectionner par l'utilisateur
     QStringList listAll = allContentVariable.split(',');
@@ -96,10 +52,6 @@ QString MainWindow::removeUnwantedVariable(QString allContentVariable /*toutes v
     strModified = strModified.remove(strModified.lastIndexOf(','),1);
     return strModified;
 }
-
-
-
-
 
 void MainWindow::addModifiedFile(QString dataModified, QString name){
     name = name.remove(0, name.lastIndexOf('/'));                       //Retire le chemin des fichiers JSON (et ne conserve que le nom du fichier)
@@ -128,7 +80,6 @@ void MainWindow::executePythonScript(){     //Execute le script python, pas de p
     argument.append(QString::number(QCoreApplication::applicationPid()));
     qDebug() << command + "  0 " + argument.at(0) + "  1 " + argument.at(1) + "   2 " + argument.at(2) + "   3 " + argument.at(3);
 
-
     m_processPythonScript->setProgram(command);
     m_processPythonScript->setArguments(argument);
     m_processPythonScript->start();
@@ -152,7 +103,6 @@ MainWindow::~MainWindow()
     delete ui_settings;
     delete m_fileJSON;
     delete m_fileJSONModified;
-    delete m_listWidgetItem;
     delete ui;
 
     delete m_processPythonScript;

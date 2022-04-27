@@ -47,6 +47,7 @@ void MainWindow::getPath(){     //Recupere le path des fichiers JSON selectionee
         setPath();
         ui_settings->setSettings(m_folderJSON.path() + '/',m_folderExcel);
     }
+
     m_listJSON = m_folderJSON.entryList(QDir::Files, QDir::Name);
     m_folderModifiedJSON.setPath(QApplication::applicationDirPath() + "/tempJSON\\");
     if (m_folderModifiedJSON.exists())
@@ -55,6 +56,5 @@ void MainWindow::getPath(){     //Recupere le path des fichiers JSON selectionee
     if (!m_folderModifiedJSON.exists())
         qDebug() << "probleme de creation dossier JSON modifie (AKA tempJSON)";
     for (int i = 0; i < m_listJSON.size(); i++) m_listJSON[i] = m_folderJSON.path() + '/' + m_listJSON[i];
-
     getVar();
 }

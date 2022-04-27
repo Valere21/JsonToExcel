@@ -5,8 +5,11 @@ int getNbrVar(QString pathToJson){                          //Renvoie le nombre 
     QFile *fileJSON = new QFile(pathToJson);
     QString *allData = new QString;                  //Contient toute les donnees JSON
     if (fileJSON ->exists()){                           //Ouvre les fichiers afin de manipuler leurs donnee
-        if (!fileJSON ->isOpen()){                              //Verifie que le fichier existe
-            fileJSON ->open(QIODevice::ReadWrite);
+        if (!fileJSON->isOpen()){                              //Verifie que le fichier existe
+            qDebug() << "need to be open";
+            fileJSON->open(QIODevice::ReadWrite);
+            qDebug() << fileJSON->errorString();
+            qDebug() << fileJSON->error();
         }
 
         *allData = fileJSON ->readAll();                       //Permet des manipulations sur les données des fichiers JSON
@@ -26,7 +29,8 @@ int getNbrVar(QString pathToJson){                          //Renvoie le nombre 
 }
 
 void MainWindow::getVar(){              //Fonction permettant d'isoler les variables selectionnes par l'utilisateur (oui c'est un copie coller de la fonction format file, oui c'est pas opti, oui c'est moche, c'est moche hein)
-    ui_dialog = new Dialog;
+
+    ui_dialog = new Dialog(this);
     connect (ui_dialog, SIGNAL(si_quitApp()), this, SLOT(sl_quitApp()));
     connect(this, SIGNAL(si_sendListVar(QString)), ui_dialog, SLOT(sl_getListVar(QString)));
     connect (ui_dialog, SIGNAL(si_sendSelectedVar(QStringList)), this, SLOT(sl_getSelectedVar(QStringList)));
@@ -43,10 +47,14 @@ void MainWindow::getVar(){              //Fonction permettant d'isoler les varia
     }
 
     m_fileJSON = new QFile(m_listJSON.at(indexFileMaxVar));
+
     if (m_fileJSON->exists()){                           //Ouvre les fichiers afin de manipuler leurs donnee
         if (!m_fileJSON->isOpen()){                              //Verifie que le fichier existe
             m_fileJSON->open(QIODevice::ReadWrite);
         }
+
+
+
         QString *all = new QString(m_fileJSON->readAll());
         QString *var = new QString;
 
@@ -61,17 +69,19 @@ void MainWindow::getVar(){              //Fonction permettant d'isoler les varia
 
         emit si_sendListVar(*var);
 
+        m_fileJSON->close();
 
         delete var;
         delete all;
         delete m_fileJSON;
 
-        all= nullptr;
+        all = nullptr;
         var = nullptr;
         m_fileJSON = nullptr;
     }
-    else
+    else if (!m_fileJSON->exists()){
         qDebug() << "does not exist";
+    }
 }
 
 void MainWindow::sl_getSelectedVar(QStringList list){
@@ -80,15 +90,22 @@ void MainWindow::sl_getSelectedVar(QStringList list){
     formatFile(list);
 }
 
-QString getVarData(QStringList listSelectedVar, QStringList listAllVar){
-    QString strVarDataSelect;
-    for (int i = 0; i < listAllVar.size(); i++){
-        for (int j = 0; j < listSelectedVar.size(); j++){
-            if (listAllVar.at(i).contains(listSelectedVar.at(j))){
-                strVarDataSelect.append(listAllVar.at(i));
-            }
-            else ;
-        }
-    }
-    return strVarDataSelect;
+void MainWindow::sl_getRuleFilled(QString var, ruleSelected rule, t_option option){
+
+    Rule *newRule = new Rule(var,rule,option);
+    qDebug() << option.name;
+    qDebug() << option.val;
+    m_listRule.append(newRule);
 }
+
+
+
+
+
+
+
+
+
+
+
+
