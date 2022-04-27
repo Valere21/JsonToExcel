@@ -2,13 +2,9 @@
 
 Settings::Settings()
 {
-//    QSettings m_settings("QApplication::applicationDirPath() + configVariable.ini", QSettings::IniFormat);
     QSettings m_settings("", QSettings::IniFormat);
 }
 
-//Settings::~Settings(){
-////    delete this;
-//}
 
 QStringList Settings::getSettings(){
     QStringList pathValue;

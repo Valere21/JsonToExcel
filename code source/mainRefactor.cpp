@@ -2,7 +2,7 @@
 
 void MainWindow::formatFile(QStringList listSelectedVar){                                                          //Fonction permettant d'enlever les \ en trop dans les fichiers JSON ainsi que les 2 " présent. Cette modification est necessaire pour que le scirpt python fonctionne correctement
 
-    qDebug() <<  listSelectedVar;
+    //    qDebug() <<  listSelectedVar;
 
     long percent = 0;
     for (int i = 0; i < m_listJSON.size(); i++){                                                                    //Boucle permettant de traiter tous les fichiers JSON selectionees
@@ -14,29 +14,19 @@ void MainWindow::formatFile(QStringList listSelectedVar){                       
             }
             QString regularData;
             QString selectData;
-            regularData = parseVar(m_fileJSON->readAll()).at(0);
-            selectData = parseVar(m_fileJSON->readAll()).at(1);
+            QString insertStr;
+            QStringList list = parseVar(m_fileJSON->readAll());
 
-            //            QString *all = new QString(m_fileJSON->readAll());
-            //            QString *var = new QString;
+            regularData = list.at(1);
+            selectData = list.at(0);
+            insertStr = regularData;
+            insertStr = insertStr.insert(regularData.indexOf('{')+1,selectData);
 
-            //            *all = all->remove(0,1);
-            //            *all = all->remove('\\');
-
-            //            *var = all->mid(all->indexOf('{')+1,-1);
-            //            *var = var->left(var->indexOf('}')-1);
-
-            //            *all = all->left(all->indexOf(('{')));
-            //            *all += all->rightRef(all->indexOf(('}')));
-
-            //            emit si_sendListVar(*var);
-
-            //            delete var;
-            //            delete all;
-            //            delete m_fileJSON;
-
-            //            all = nullptr;
-            //            var = nullptr;
+//            qDebug() << "regular " << regularData;
+//            qDebug() << "IF CONTAIN" << regularData.contains('{');
+//            qDebug() <<"selected " << selectData;
+//            qDebug() << "POS " << regularData.indexOf('{');
+            qDebug() << "INSERT " << insertStr;
             addModifiedFile(selectData,m_listJSON.at(i));                                                             //Appel fct de modification des JSON + enregistrement dans dossier
 
             m_fileJSON = nullptr;
@@ -45,8 +35,8 @@ void MainWindow::formatFile(QStringList listSelectedVar){                       
                 ui->progressBar->setValue(percent);
             }
         }
-        ui->progressBar->setValue(100);
-        executePythonScript();
-        //    qDebug() << "python script end";
     }
+    ui->progressBar->setValue(100);
+    executePythonScript();
+    //    qDebug() << "python script end";
 }

@@ -36,7 +36,6 @@ public:
     void formatFile(QStringList listSelectedVar);                                      //Formate les fichiers JSON afin de retirer les acolades et guillemets en trop dans les fichiers (formatage n�cessaire pour bonne lecture ensuite dans le script python)
     void addModifiedFile(QString dataModified, QString name);      //Ecrit la version modifi� des fichiers JSON  dans une copie + ajoute le nom du fichier en fct de la date
     void emptyJsonFolder();                                        //Vide le dossier JSONModified une fois le traitement effectuer
-    QString removeUnwantedVariable(QString allContentVariable, QStringList listSelected);
     QStringList parseVar(QString readAll);
 
     ~MainWindow();

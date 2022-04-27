@@ -47,7 +47,6 @@ void MainWindow::getPath(){     //Recupere le path des fichiers JSON selectionee
         setPath();
         ui_settings->setSettings(m_folderJSON.path() + '/',m_folderExcel);
     }
-
     m_listJSON = m_folderJSON.entryList(QDir::Files, QDir::Name);
     m_folderModifiedJSON.setPath(QApplication::applicationDirPath() + "/tempJSON\\");
     if (m_folderModifiedJSON.exists())

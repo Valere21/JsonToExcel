@@ -6,10 +6,7 @@ int getNbrVar(QString pathToJson){                          //Renvoie le nombre 
     QString *allData = new QString;                  //Contient toute les donnees JSON
     if (fileJSON ->exists()){                           //Ouvre les fichiers afin de manipuler leurs donnee
         if (!fileJSON->isOpen()){                              //Verifie que le fichier existe
-            qDebug() << "need to be open";
             fileJSON->open(QIODevice::ReadWrite);
-            qDebug() << fileJSON->errorString();
-            qDebug() << fileJSON->error();
         }
 
         *allData = fileJSON ->readAll();                       //Permet des manipulations sur les données des fichiers JSON
@@ -84,10 +81,10 @@ void MainWindow::getVar(){              //Fonction permettant d'isoler les varia
     }
 }
 
-void MainWindow::sl_getSelectedVar(QStringList list){
+void MainWindow::sl_getSelectedVar(QStringList listSelected){
     delete ui_dialog;
     ui_dialog = nullptr;
-    formatFile(list);
+    formatFile(listSelected);
 }
 
 void MainWindow::sl_getRuleFilled(QString var, ruleSelected rule, t_option option){

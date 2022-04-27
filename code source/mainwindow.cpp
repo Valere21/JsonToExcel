@@ -27,31 +27,14 @@ QStringList MainWindow::parseVar(QString readAll){
     list.append(var);
     list.append(all);
 
-    qDebug() << "1 " << list.at(0) << Qt::endl;
-    qDebug() << "2 " << list.at(1)  << Qt::endl;
-    qDebug() << "INSERTION" << list.value(0).insert(all.indexOf('{'),list.value(1));
+//    qDebug() << "1 " << list.at(0) << Qt::endl;
+//    qDebug() << "2 " << list.at(1)  << Qt::endl;
+//    qDebug() << "INSERTION" << list.value(0).insert(all.indexOf('{'),list.value(1));
 
     return list;
 }
 
 
-
-QString MainWindow::removeUnwantedVariable(QString allContentVariable /*toutes variables JSON*/, QStringList listSelected /*variables JSON selectionees*/){    // Fonction ne laissant que les variables selectionner par l'utilisateur
-    QStringList listAll = allContentVariable.split(',');
-
-    QString strModified;
-    for (int i = 0; i < listSelected.size(); i++){
-        for (int j = 0; j < listAll.size(); j++){
-            if (listSelected.at(i).contains(listAll.at(j).left(listAll.at(j).indexOf(':')-1))){
-                //                qDebug() << "oui " << listAll.at(j).left(listAll.at(j).indexOf(':')-1);
-                strModified.append(listAll.at(j) +',');
-
-            }
-        }
-    }
-    strModified = strModified.remove(strModified.lastIndexOf(','),1);
-    return strModified;
-}
 
 void MainWindow::addModifiedFile(QString dataModified, QString name){
     name = name.remove(0, name.lastIndexOf('/'));                       //Retire le chemin des fichiers JSON (et ne conserve que le nom du fichier)
@@ -64,8 +47,6 @@ void MainWindow::addModifiedFile(QString dataModified, QString name){
     delete m_fileJSONModified;
     m_fileJSONModified = nullptr;
 }
-
-
 
 
 void MainWindow::executePythonScript(){     //Execute le script python, pas de probleme la-dessus
