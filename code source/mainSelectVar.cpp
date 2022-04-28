@@ -90,8 +90,10 @@ void MainWindow::sl_getSelectedVar(QStringList listSelected){
 void MainWindow::sl_getRuleFilled(QString var, ruleSelected rule, t_option option){
 
     Rule *newRule = new Rule(var,rule,option);
-    qDebug() << option.name;
-    qDebug() << option.val;
+    qDebug() << "name "  << option.name;
+    qDebug() << "val " << option.val;
+    qDebug() << "option " << option.val;
+
     m_listRule.append(newRule);
 }
 

@@ -49,6 +49,10 @@ public:
     void setRule(ruleSelected rule){m_rule = rule;}
     void setOption(t_option option){m_option = option;}
 
+    QString getVar(){return m_var;}
+    ruleSelected getRule(){return m_rule;}
+    t_option getOption(){return m_option;}
+
 signals:
     void si_sendRuleFilled(QString var, ruleSelected rule, t_option option);
 private slots:

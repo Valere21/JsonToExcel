@@ -59,15 +59,19 @@ void Dialog::on_addRule_clicked()
     connect(ui_rule, SIGNAL(si_sendRuleFilled(QString, ruleSelected, t_option)), this->parent(), SLOT(sl_getRuleFilled(QString, ruleSelected, t_option)));
 }
 
+
+void Dialog::on_toolButton_clicked()
+{
+    if (ui_ruleOrganizer){
+        delete ui_ruleOrganizer;
+        ui_ruleOrganizer = nullptr;
+    }
+    ui_ruleOrganizer = new RuleOrganizer;
+qDebug() << Q_FUNC_INFO;
+    ui_ruleOrganizer->setList(m_listRule);
+}
+
 void Dialog::on_buttonBox_rejected()
 {
     emit si_quitApp();
 }
-
-
-
-
-
-
-
-

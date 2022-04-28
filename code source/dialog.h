@@ -5,14 +5,17 @@
 #include <QDebug>
 
 #include "rule.h"
-
+#include "ruleorganizer.h"
 
 namespace Ui {
 class Dialog;
 }
 
+class RuleOrganizer;
+
 class Dialog : public QDialog
 {
+
     Q_OBJECT
 
 public:
@@ -34,10 +37,15 @@ private slots:
     void on_buttonBox_rejected();
     void on_addRule_clicked();
 
+    void on_toolButton_clicked();
+
 private:
     Ui::Dialog *ui;
+    RuleOrganizer *ui_ruleOrganizer = nullptr;
     Rule *ui_rule = nullptr;
     QList<Rule*> m_listRule;
+
+
     QStringList m_listVarData;
     QStringList m_listVar;
 

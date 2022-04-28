@@ -34,6 +34,8 @@ public:
     void getPath();                                                  //  Obtient le chemins des fichiers JSON
     void getVar();                                                  //Obtient le nom des variables contenue dans la balise "content" des fichiers. Elles sont s�l�ctionable par l'utilisateur
     void formatFile(QStringList listSelectedVar);                                      //Formate les fichiers JSON afin de retirer les acolades et guillemets en trop dans les fichiers (formatage n�cessaire pour bonne lecture ensuite dans le script python)
+    bool isFileCorrect(QFile *fileJson, QStringList varDataJson);              //Vérifie qu'il y'a le nombre de variables indiquées dans les règles par rapport à ceux présent dans les fichiers
+    bool isFileAccepted(QFile *fileJson, QStringList varDataJson);                               //Rnevoie true si le fichier vérifie les règles (et contient toutes les variables des règles).
     void addModifiedFile(QString dataModified, QString name);      //Ecrit la version modifi� des fichiers JSON  dans une copie + ajoute le nom du fichier en fct de la date
     void emptyJsonFolder();                                        //Vide le dossier JSONModified une fois le traitement effectuer
     QStringList parseVar(QString readAll);
@@ -56,7 +58,7 @@ private:
     Dialog *ui_dialog = nullptr;
     Settings *ui_settings = nullptr;
 
-    QList<Rule*> m_listRule;
+     QList<Rule*> m_listRule;
 
     QFile *m_fileJSON = nullptr;
     QFile *m_fileJSONModified = nullptr;

@@ -21,9 +21,10 @@ QStringList MainWindow::parseVar(QString readAll){
     all = all.remove('\\');
 
     var = all.mid(all.indexOf('{')+1,-1);
-    var = var.left(var.indexOf('}')-1);
+    var = var.left(var.indexOf('}'));
 
     all = all.remove(all.indexOf('{')+1,var.size()+1);
+
     list.append(var);
     list.append(all);
 
