@@ -1,0 +1,13 @@
+debug/dialog.o
+debug/main.o
+debug/mainRefactor.o
+debug/mainSelectVar.o
+debug/mainSetting.o
+debug/mainwindow.o
+debug/rule.o
+debug/ruleorganizer.o
+debug/settings.o
+debug/moc_dialog.o
+debug/moc_mainwindow.o
+debug/moc_rule.o
+debug/moc_ruleorganizer.o

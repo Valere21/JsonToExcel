@@ -48,7 +48,6 @@ signals:
 public slots:
     void sl_getSelectedVar(QStringList);
     void sl_quitApp(){this->~MainWindow();}
-    void sl_getRuleFilled(QString, ruleSelected, t_option);
 
 private slots:
     void on_MainWindow_destroyed();
@@ -58,7 +57,7 @@ private:
     Dialog *ui_dialog = nullptr;
     Settings *ui_settings = nullptr;
 
-     QList<Rule*> m_listRule;
+     QList<Rule*> *m_listRuleSelect = nullptr;
 
     QFile *m_fileJSON = nullptr;
     QFile *m_fileJSONModified = nullptr;

@@ -22,6 +22,7 @@ public:
     explicit Dialog(QWidget *parent = nullptr);
 
     void splitList();
+     QList<Rule*>* getListRule(){return m_listRule;}
 
     ~Dialog();
 
@@ -36,14 +37,16 @@ private slots:
     void on_pushButton_clicked();
     void on_buttonBox_rejected();
     void on_addRule_clicked();
-
     void on_toolButton_clicked();
+
+    void sl_getRuleFilled(QString, ruleSelected, t_option);
+
 
 private:
     Ui::Dialog *ui;
     RuleOrganizer *ui_ruleOrganizer = nullptr;
     Rule *ui_rule = nullptr;
-    QList<Rule*> m_listRule;
+    QList<Rule*> *m_listRule = nullptr;
 
 
     QStringList m_listVarData;

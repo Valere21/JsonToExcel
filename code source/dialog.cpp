@@ -50,15 +50,29 @@ void Dialog::on_pushButton_clicked()
 
 void Dialog::on_addRule_clicked()
 {
+    if (!m_listRule){
+        m_listRule = new QList<Rule*>;
+        qDebug() << "creation de liste rule";
+    }
     if (ui_rule){
         delete ui_rule;
         ui_rule = nullptr;
     }
     ui_rule = new Rule(m_listVar);
-//    connect(ui_rule, SIGNAL(si_sendRuleFilled(QString, ruleSelected, t_option)), this, SLOT(sl_getRuleFilled(QString, ruleSelected, t_option)));
-    connect(ui_rule, SIGNAL(si_sendRuleFilled(QString, ruleSelected, t_option)), this->parent(), SLOT(sl_getRuleFilled(QString, ruleSelected, t_option)));
+    //    connect(ui_rule, SIGNAL(si_sendRuleFilled(QString, ruleSelected, t_option)), this, SLOT(sl_getRuleFilled(QString, ruleSelected, t_option)));
+    connect(ui_rule, SIGNAL(si_sendRuleFilled(QString, ruleSelected, t_option)), this, SLOT(sl_getRuleFilled(QString, ruleSelected, t_option)));
 }
 
+void Dialog::sl_getRuleFilled(QString var, ruleSelected rule, t_option option){
+
+    Rule *newRule = new Rule(var,rule,option);
+    qDebug() << "name "  << option.name;
+    qDebug() << "val " << option.val;
+    qDebug() << "option selected " << option.optionSel;
+
+    m_listRule->append(newRule);
+    qDebug() << "POS 1 " << m_listRule->size() << m_listRule;
+}
 
 void Dialog::on_toolButton_clicked()
 {
@@ -67,10 +81,8 @@ void Dialog::on_toolButton_clicked()
         ui_ruleOrganizer = nullptr;
     }
     ui_ruleOrganizer = new RuleOrganizer;
-qDebug() << Q_FUNC_INFO;
     ui_ruleOrganizer->setList(m_listRule);
 }
-
 void Dialog::on_buttonBox_rejected()
 {
     emit si_quitApp();

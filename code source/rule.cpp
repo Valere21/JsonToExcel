@@ -76,34 +76,6 @@ void Rule::on_getConst_clicked(bool checked)
         ui->listVarRes->setDisabled(false);
 }
 
-void Rule::on_buttonBox_accepted()
-{
-    if (ui->listRule->currentIndex() >= Egal){
-        if (ui->getConst->isChecked()){
-            m_option.optionSel = Var;
-            m_option.val = ui->constRes->value();
-            emit si_sendRuleFilled(m_var,m_rule,m_option);
-        }
-        else if (ui->getVar->isChecked()){
-            m_option.optionSel = Number;
-            m_option.name = ui->listVarRes->currentText();
-            emit si_sendRuleFilled(m_var,m_rule,m_option);
-        }
-        else {
-            ui->buttonBox->setDisabled(true);
-            QMessageBox msgBox;
-            msgBox.setText("Vous devez cochez une case");
-            msgBox.exec();
-        }
-    }
-    else {
-        m_var = ui->listVar->currentText();
-        m_rule = (ruleSelected)ui->listRule->currentIndex();
-        emit si_sendRuleFilled(m_var,m_rule,m_option);
-    }
-}
-
-
 void Rule::on_listVarRes_currentIndexChanged(const QString &arg1)
 {
     qDebug() << Q_FUNC_INFO << arg1;
@@ -120,6 +92,37 @@ void Rule::on_constRes_valueChanged(double arg1)
     ui->getConst->setCheckState(Qt::Checked);
 }
 
+void Rule::on_buttonBox_accepted()
+{
+    m_option.val = 0;
+    m_option.name = "Non";
+
+
+    if (ui->listRule->currentIndex() >= Egal){
+        if (ui->getConst->isChecked()){
+            m_option.optionSel = Number;
+            m_option.val = ui->constRes->value();
+            emit si_sendRuleFilled(m_var,m_rule,m_option);
+        }
+        else if (ui->getVar->isChecked()){
+            m_option.optionSel = Var;
+            m_option.name = ui->listVarRes->currentText();
+            emit si_sendRuleFilled(m_var,m_rule,m_option);
+        }
+        else {
+            ui->buttonBox->setDisabled(true);
+            QMessageBox msgBox;
+            msgBox.setText("Vous devez cochez une case");
+            msgBox.exec();
+        }
+    }
+    else {
+        m_var = ui->listVar->currentText();
+        m_rule = (ruleSelected)ui->listRule->currentIndex();
+        m_option.optionSel = None;
+        emit si_sendRuleFilled(m_var,m_rule,m_option);
+    }
+}
 
 
 Rule::~Rule()

@@ -22,10 +22,14 @@ void MainWindow::formatFile(QStringList listSelectedVar){                       
             insertStr = regularData;
             insertStr = insertStr.insert(regularData.indexOf('{')+1,selectData);
 
-            if (!m_listRule.isEmpty()){
-                if (isFileCorrect(m_fileJSON, selectData.split(','))){
-                    if (isFileAccepted(m_fileJSON, selectData.split(','))){
-                        addModifiedFile(selectData, m_fileJSON->fileName());
+            m_listRuleSelect = ui_dialog->getListRule();
+
+            if (m_listRuleSelect){
+                if (!m_listRuleSelect->isEmpty()){
+                    if (isFileCorrect(m_fileJSON, selectData.split(','))){
+                        if (isFileAccepted(m_fileJSON, selectData.split(','))){
+                            addModifiedFile(selectData, m_fileJSON->fileName());
+                        }
                     }
                 }
             }
@@ -49,20 +53,18 @@ void MainWindow::formatFile(QStringList listSelectedVar){                       
 bool MainWindow::isFileCorrect(QFile *fileJson, QStringList varDataJson){
     bool flag = false;
 
-    for (int i = 0; i < m_listRule.size(); i++){
-//        if (varDataJson.contains())
+    for (int i = 0; i < m_listRuleSelect->size(); i++){
+        //        if (varDataJson.contains())
     }
-
-
     return flag;
 }
 
 bool MainWindow::isFileAccepted(QFile *file, QStringList varDataJson){
     bool flag = false;
 
-    if (!m_listRule.isEmpty()){
-        for (int i = 0; i < m_listRule.size(); i++){
-            Rule *nextRule = m_listRule.at(i);
+    if (!m_listRuleSelect->isEmpty()){
+        for (int i = 0; i < m_listRuleSelect->size(); i++){
+            Rule *nextRule = m_listRuleSelect->at(i);
             if (nextRule->getRule() < Egal){
 
             }
