@@ -16,12 +16,16 @@ public:
     explicit RuleOrganizer(QWidget *parent = nullptr);
     void setList(QList<Rule *> *list);
 
+    QLineEdit* setupRuleLabel(Rule *rule, int index);
+
     ~RuleOrganizer();
 
 private:
     Ui::RuleOrganizer *ui;
     QList<Rule*> *listRule = nullptr;
-    QLineEdit *newRuleLabel;
+    QLineEdit *newRuleLabel = nullptr;
+
+    QList<QLineEdit*> listRuleLabel;
 };
 
 #endif // RULEORGANIZER_H

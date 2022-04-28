@@ -11,14 +11,20 @@
 
 #include <QtCore/QVariant>
 #include <QtWidgets/QApplication>
+#include <QtWidgets/QComboBox>
 #include <QtWidgets/QDialog>
 #include <QtWidgets/QDialogButtonBox>
+#include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QWidget>
 
 QT_BEGIN_NAMESPACE
 
 class Ui_RuleOrganizer
 {
 public:
+    QWidget *widget;
+    QHBoxLayout *horizontalLayout;
+    QComboBox *comboBox;
     QDialogButtonBox *buttonBox;
 
     void setupUi(QDialog *RuleOrganizer)
@@ -26,11 +32,28 @@ public:
         if (RuleOrganizer->objectName().isEmpty())
             RuleOrganizer->setObjectName(QString::fromUtf8("RuleOrganizer"));
         RuleOrganizer->resize(400, 300);
-        buttonBox = new QDialogButtonBox(RuleOrganizer);
+        widget = new QWidget(RuleOrganizer);
+        widget->setObjectName(QString::fromUtf8("widget"));
+        widget->setGeometry(QRect(140, 250, 249, 30));
+        horizontalLayout = new QHBoxLayout(widget);
+        horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
+        horizontalLayout->setSizeConstraint(QLayout::SetMinimumSize);
+        horizontalLayout->setContentsMargins(0, 0, 0, 0);
+        comboBox = new QComboBox(widget);
+        comboBox->addItem(QString());
+        comboBox->addItem(QString());
+        comboBox->addItem(QString());
+        comboBox->setObjectName(QString::fromUtf8("comboBox"));
+
+        horizontalLayout->addWidget(comboBox);
+
+        buttonBox = new QDialogButtonBox(widget);
         buttonBox->setObjectName(QString::fromUtf8("buttonBox"));
-        buttonBox->setGeometry(QRect(30, 240, 341, 32));
         buttonBox->setOrientation(Qt::Horizontal);
         buttonBox->setStandardButtons(QDialogButtonBox::Cancel|QDialogButtonBox::Ok);
+
+        horizontalLayout->addWidget(buttonBox);
+
 
         retranslateUi(RuleOrganizer);
         QObject::connect(buttonBox, SIGNAL(accepted()), RuleOrganizer, SLOT(accept()));
@@ -42,6 +65,10 @@ public:
     void retranslateUi(QDialog *RuleOrganizer)
     {
         RuleOrganizer->setWindowTitle(QApplication::translate("RuleOrganizer", "Dialog", nullptr));
+        comboBox->setItemText(0, QString());
+        comboBox->setItemText(1, QApplication::translate("RuleOrganizer", "ET", nullptr));
+        comboBox->setItemText(2, QApplication::translate("RuleOrganizer", "OU", nullptr));
+
     } // retranslateUi
 
 };

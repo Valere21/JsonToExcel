@@ -12,7 +12,7 @@ class Rule;
 enum optionSelect {
     None,
     Number,
-    Var
+    Name
 };
 
 enum ruleSelected {

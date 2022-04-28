@@ -105,7 +105,7 @@ void Rule::on_buttonBox_accepted()
             emit si_sendRuleFilled(m_var,m_rule,m_option);
         }
         else if (ui->getVar->isChecked()){
-            m_option.optionSel = Var;
+            m_option.optionSel = Name;
             m_option.name = ui->listVarRes->currentText();
             emit si_sendRuleFilled(m_var,m_rule,m_option);
         }
