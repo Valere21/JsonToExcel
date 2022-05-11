@@ -48,8 +48,8 @@ void MainWindow::executePythonScript(){     //Execute le script python, pas de p
     m_processPythonScript = new QProcess();
     QString command = ("python.exe");
     QStringList argument;
-    //        argument.append("main.py");
-    argument.append("C:\\PycharmProjects\\extractDataJSON\\main.py");       //0
+            argument.append("main.py");
+//    argument.append("C:\\PycharmProjects\\extractDataJSON\\main.py");       //0
     QString argPathFolderModi = m_folderModifiedJSON.path() + '/';
     argument.append(argPathFolderModi);                                     //1
     argument.append(m_folderExcel + '/');                                         //2
