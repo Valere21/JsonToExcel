@@ -47,6 +47,7 @@ signals:
 public slots:
     void sl_getSelectedVar(QStringList);
     void sl_quitApp(){this->~MainWindow();}
+    void sl_isAllSelected(bool);
 
 private slots:
     void on_MainWindow_destroyed();
@@ -67,6 +68,8 @@ private:
     QStringList m_listJSON;
     QString m_folderExcel;
     QDir m_folderModifiedJSON;
+
+    bool m_isAllSelected = false;
 
 };
 

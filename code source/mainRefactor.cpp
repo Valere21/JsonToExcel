@@ -5,31 +5,23 @@
 
 
 QStringList getDataOrName(QString dataVar){                         //Sépare le nom de la valeur d'une variable content, renvoie les 2 informations dans une QStringList
-    //    qDebug() << Q_FUNC_INFO << dataVar;
     QStringList list;
     list.append(dataVar.left(dataVar.indexOf(':')));                //position 0 => name
     QString strVar = dataVar.remove(0,dataVar.indexOf(':')+1);
     strVar.remove(' ');
     list.append(strVar);              //position 1 => value
-    //    qDebug() <<  "list.at(NAME) "  << list.at(0);
-    //        qDebug() << " list.at(VAR) "  << list.at(1);
     return list;
 }
 
 QString formatData(QString regularData, QStringList selectedData, QStringList dataWithVar){  // Format les donnees a ecrire dans le fichier JSON
     QString dataFormat;
-    //    qDebug() << Q_FUNC_INFO << regularData;
     for (int i = 0; i < dataWithVar.size(); i++){
         for (int j = 0; j < selectedData.size(); j++){
             if (getDataOrName(dataWithVar.at(i)).at(NAME) == selectedData.at(j))
                 dataFormat.append(dataWithVar.at(i) + ',');
         }
     }
-    //    dataFormat.remove(dataFormat.lastIndexOf(','));
     dataFormat.chop(1);
-
-    //    dataFormat.prepend('{');
-    //    dataFormat.chop(1);
     dataFormat.append('}');
     regularData.remove('\\');
     dataFormat.remove('\\');
@@ -37,13 +29,11 @@ QString formatData(QString regularData, QStringList selectedData, QStringList da
     regularData.remove(0,1);
     regularData.remove(regularData.indexOf('{')-1,1);
     regularData.remove(regularData.indexOf('{')+1,1);
-    //    regularData.remove(regularData.indexOf('}')+1,1);
     qDebug() << dataFormat;
 
     QString result = regularData.insert(regularData.indexOf('{')+1,dataFormat);
-    //    result.prepend('"');
     result.prepend("{\"");
-        qDebug() << "result " << result;
+    qDebug() << "result " << result;
     return result;
 }
 
@@ -61,7 +51,8 @@ bool checkList(QStringList selectedData, QStringList dataWithVar){  // Incrément
 }
 
 bool isRuleRespected(Rule *rule, QString dataVar){
-    //    qDebug() << Q_FUNC_INFO;
+    qDebug() << Q_FUNC_INFO << rule->getOption().optionSel;
+
     bool flag = false;
     switch (rule->getRule()) {
     case NaN :{
@@ -72,67 +63,69 @@ bool isRuleRespected(Rule *rule, QString dataVar){
     }
     case Zero :{
         QRegExp re("\\d*");
-        if (re.exactMatch(getDataOrName(dataVar).at(VAR)) && getDataOrName(dataVar).at(VAR).toInt() == 0){
+        if (re.exactMatch(getDataOrName(dataVar).at(VAR)) && getDataOrName(dataVar).at(VAR).toFloat(NULL) == 0){
             flag = true;
         }
         break;
     }
     case One :{
         QRegExp re("\\d*");
-        if (re.exactMatch(getDataOrName(dataVar).at(VAR)) && getDataOrName(dataVar).at(VAR).toInt() == 1)
+        if (re.exactMatch(getDataOrName(dataVar).at(VAR)) && getDataOrName(dataVar).at(VAR).toFloat(NULL) == 1)
             flag = true;
         break;
     }
     case Egal :{
         if (rule->getOption().optionSel == Name){
-            if (getDataOrName(rule->getVar()).at(VAR).toInt() == getDataOrName(rule->getOption().name).at(VAR).toInt())
+            if (getDataOrName(rule->getVar()).at(VAR).toFloat(NULL) == getDataOrName(rule->getOption().name).at(VAR).toFloat(NULL)){
+                qDebug() << "val 1 " << getDataOrName(rule->getVar()).at(VAR).toFloat(NULL) << " val2 " << getDataOrName(rule->getOption().name).at(VAR).toFloat(NULL);
                 flag = true;
+            }
         }
         if (rule->getOption().optionSel == Number){
-            if (getDataOrName(rule->getVar()).at(VAR).toInt() == rule->getOption().val)
+            if (getDataOrName(dataVar).at(VAR).toFloat() == rule->getOption().val)
                 flag = true;
         }
         break;
     }
     case Inf :{
         if (rule->getOption().optionSel == Name){
-            if (getDataOrName(rule->getVar()).at(VAR).toInt() < getDataOrName(rule->getOption().name).at(VAR).toInt())
+            if (getDataOrName(rule->getVar()).at(VAR).toFloat(NULL) < getDataOrName(rule->getOption().name).at(VAR).toFloat(NULL))
                 flag = true;
         }
         if (rule->getOption().optionSel == Number){
-            if (getDataOrName(rule->getVar()).at(VAR).toInt() < rule->getOption().val)
+            if (getDataOrName(dataVar).at(VAR).toFloat() < rule->getOption().val)
                 flag = true;
         }
         break;
     }
     case Sup :{
         if (rule->getOption().optionSel == Name){
-            if (getDataOrName(rule->getVar()).at(VAR).toInt() > getDataOrName(rule->getOption().name).at(VAR).toInt())
+            if (getDataOrName(rule->getVar()).at(VAR).toFloat(NULL) > getDataOrName(rule->getOption().name).at(VAR).toFloat(NULL))
                 flag = true;
         }
         if (rule->getOption().optionSel == Number){
-            if (getDataOrName(rule->getVar()).at(VAR).toInt() > rule->getOption().val)
+            if (getDataOrName(dataVar).at(VAR).toFloat() > rule->getOption().val)
                 flag = true;
         }
         break;
     }
     case InfEgal :{
         if (rule->getOption().optionSel == Name){
-            if (getDataOrName(rule->getVar()).at(VAR).toInt() <= getDataOrName(rule->getOption().name).at(VAR).toInt())
+            if (getDataOrName(rule->getVar()).at(VAR).toFloat(NULL) <= getDataOrName(rule->getOption().name).at(VAR).toFloat(NULL))
                 flag = true;
         }
         if (rule->getOption().optionSel == Number){
-            if (getDataOrName(rule->getVar()).at(VAR).toInt() <= rule->getOption().val)
+            if (getDataOrName(dataVar).at(VAR).toFloat() <= rule->getOption().val)
                 flag = true;
         }
         break;    }
     case SupEgal :{
         if (rule->getOption().optionSel == Name){
-            if (getDataOrName(rule->getVar()).at(VAR).toInt() >= getDataOrName(rule->getOption().name).at(VAR).toInt())
+            if (getDataOrName(rule->getVar()).at(VAR).toFloat(NULL) >= getDataOrName(rule->getOption().name).at(VAR).toFloat(NULL))
                 flag = true;
         }
         if (rule->getOption().optionSel == Number){
-            if (getDataOrName(rule->getVar()).at(VAR).toInt() >= rule->getOption().val)
+            if (getDataOrName(dataVar).at(VAR).toFloat() >= rule->getOption().val)
                 flag = true;
         }
         break;
@@ -155,28 +148,37 @@ bool MainWindow::isFileAccepted(QStringList dataWithVar){
     for (int i = 0; i < m_listRuleSelect->size(); i++){
         for (int j = 0; j < dataWithVar.size(); j++){
             if (m_listRuleSelect->at(i)->getVar() == getDataOrName(dataWithVar.at(j)).at(NAME)){
-                qDebug() << "HERE " << m_listRuleSelect->at(i)->getVar() << getDataOrName(dataWithVar.at(j)).at(VAR);
+                                qDebug() << "HERE " << m_listRuleSelect->at(i)->getVar() << getDataOrName(dataWithVar.at(j)).at(VAR);
                 if (isRuleRespected(m_listRuleSelect->at(i), dataWithVar.at(j))){
                     indexRuleRespected++;
-                    qDebug() << "rule respected";
+                    qDebug() << "rule respected at i: " << i;
+                    qDebug() << "VAR ? " << getDataOrName(dataWithVar.at(j)).at(VAR);
+                    qDebug() << m_listRuleSelect->at(i)->getOption().val;
+
                 }
                 else {
-                    qDebug() << "rule not respected";
-                    //                    qDebug() << "VAR ? " << getDataOrName(dataWithVar.at(j)).at(VAR);
-                    //                    qDebug() << m_listRuleSelect->at(i)->getOption().val;
+                    qDebug() << "rule not respected at i: " << i;
+                    qDebug() << "VAR ? " << getDataOrName(dataWithVar.at(j)).at(VAR);
+                    qDebug() << m_listRuleSelect->at(i)->getOption().val;
                 }
             }
         }
-        if (!flag)
-            return false;
+        //        if (!flag)
+        //            return false;
     }
-    if (indexRuleRespected == m_listRuleSelect->size())
+    if (indexRuleRespected == m_listRuleSelect->size()){
+        qDebug() << "rule true";
         flag = true;
+    }
+    else{
+        flag = false;
+        qDebug() << "rule false";
+    }
     return flag;
 }
 
 void MainWindow::formatFile(QStringList listSelectedVar){                                                          //Fonction permettant d'enlever les \ en trop dans les fichiers JSON ainsi que les 2 " prÃ©sent. Cette modification est necessaire pour que le scirpt python fonctionne correctement
-
+    qDebug() << Q_FUNC_INFO;
     long percent = 0;
     for (int i = 0; i < m_listJSON.size(); i++){                                                                    //Boucle permettant de traiter tous les fichiers JSON selectionees
         m_fileJSON = new QFile(m_listJSON.at(i));
@@ -194,17 +196,23 @@ void MainWindow::formatFile(QStringList listSelectedVar){                       
             // 1) On vérifie que les règles sont respectées sur l'ensemble des variables
             // Si une variable n'existe pas dans le fichier alors qu'elle existe dans les règles, on zappe ce fichier
             //            qDebug() << dataWithVar;
-            if (checkList(listSelectedVar, dataWithVar.split(','))){
-                //                qDebug() << "meme nombre !" << m_fileJSON->fileName();
-                if (isFileAccepted(dataWithVar.split(','))){
-                    QString dataFormat = formatData(regularData,listSelectedVar,dataWithVar.split(','));
-                    addModifiedFile(dataFormat,m_listJSON.at(i));                                                             //Appel fct de modification des JSON + enregistrement dans dossier
+            if (!m_isAllSelected){
+                if (checkList(listSelectedVar, dataWithVar.split(','))){
+                    //                qDebug() << "meme nombre !" << m_fileJSON->fileName();
+                    if (isFileAccepted(dataWithVar.split(','))){
+                        QString dataFormat = formatData(regularData,listSelectedVar,dataWithVar.split(','));
+                        qDebug() << "here " << dataFormat,m_listJSON.at(i);
+                        addModifiedFile(dataFormat,m_listJSON.at(i));                                                             //Appel fct de modification des JSON + enregistrement dans dossier
+                    }
+                }
+                else {
+                    qDebug() << "pas le meme nombre, fichier skip " << m_fileJSON->fileName();
                 }
             }
-            else {
-                qDebug() << "pas le meme nombre, fichier skip " << m_fileJSON->fileName();
+            else if (m_isAllSelected){
+                QString dataFormat = formatData(regularData,listSelectedVar,dataWithVar.split(','));
+                addModifiedFile(dataFormat,m_listJSON.at(i));                                                             //Appel fct de modification des JSON + enregistrement dans dossier
             }
-
             m_fileJSON = nullptr;
             if (((100*i)/m_listJSON.size()) != percent){                                                               //Calcule le pourcentage de fichier JSON modifie
                 percent = (100*i)/m_listJSON.size();

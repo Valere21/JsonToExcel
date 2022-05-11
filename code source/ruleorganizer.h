@@ -14,18 +14,20 @@ class RuleOrganizer : public QDialog
 
 public:
     explicit RuleOrganizer(QWidget *parent = nullptr);
-    void setList(QList<Rule *> *list);
+    void setList(QList<Rule *> *list, int ruleOrgaOption);
 
     QLineEdit* setupRuleLabel(Rule *rule, int index);
 
     ~RuleOrganizer();
 
+signals:
+    void si_setRuleOrga(int);
+
+private slots:
+    void on_RuleOrganizer_accepted();
+
 private:
     Ui::RuleOrganizer *ui;
-    QList<Rule*> *listRule = nullptr;
-    QLineEdit *newRuleLabel = nullptr;
-
-    QList<QLineEdit*> listRuleLabel;
 };
 
 #endif // RULEORGANIZER_H

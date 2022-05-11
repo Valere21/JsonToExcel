@@ -5,14 +5,6 @@ int add(int a, int b){
     return a+b;
 }
 
-
-void check(){
-
-    int a = 42;
-    int b = 56;
-    qDebug() << add(a,b);
-}
-
 int getNbrVar(QString pathToJson){                          //Renvoie le nombre de variable contenue dans ce fichier JSON "pathToJson"
 
     QFile *fileJSON = new QFile(pathToJson);
@@ -41,9 +33,12 @@ int getNbrVar(QString pathToJson){                          //Renvoie le nombre 
 void MainWindow::getVar(){              //Fonction permettant d'isoler les variables selectionnes par l'utilisateur (oui c'est un copie coller de la fonction format file, oui c'est pas opti, oui c'est moche, c'est moche hein)
 
     ui_dialog = new Dialog(this);
-    connect (ui_dialog, SIGNAL(si_quitApp()), this, SLOT(sl_quitApp()));
     connect(this, SIGNAL(si_sendListVar(QString)), ui_dialog, SLOT(sl_getListVar(QString)));
+
+    connect (ui_dialog, SIGNAL(si_quitApp()), this, SLOT(sl_quitApp()));
     connect (ui_dialog, SIGNAL(si_sendSelectedVar(QStringList)), this, SLOT(sl_getSelectedVar(QStringList)));
+    connect (ui_dialog, SIGNAL(si_isAllSelected(bool)), this, SLOT(sl_isAllSelected(bool)));
+
 
     if (m_listJSON.isEmpty()){
         qDebug() << "mlistJSON empty";
@@ -102,6 +97,10 @@ void MainWindow::getVar(){              //Fonction permettant d'isoler les varia
     else if (!m_fileJSON->exists()){
         qDebug() << "does not exist";
     }
+}
+
+void MainWindow::sl_isAllSelected(bool flag){
+    m_isAllSelected = flag;
 }
 
 void MainWindow::sl_getSelectedVar(QStringList listSelected){

@@ -6,7 +6,7 @@ RuleOrganizer::RuleOrganizer(QWidget *parent) :
     ui(new Ui::RuleOrganizer)
 {
     ui->setupUi(this);
-//    ui->verticalLayout->setGeometry(parent->geometry());
+    ui->horizontalLayout->setEnabled(false);
     qDebug() << Q_FUNC_INFO;
 }
 
@@ -61,27 +61,34 @@ QString concateneRuleInfo(Rule *rule){
     return info;
 }
 
-QLineEdit* RuleOrganizer::setupRuleLabel(Rule *rule, int index){
-    newRuleLabel = new QLineEdit(this);
-    newRuleLabel->setGeometry(20,index*45,250,25);
-    newRuleLabel->setText(concateneRuleInfo(rule));
-    newRuleLabel->setReadOnly(true);
-    return newRuleLabel;
-}
+void RuleOrganizer::setList(QList<Rule*> *listRule, int ruleOrgaOption){
 
-void RuleOrganizer::setList(QList<Rule*> *list){
-    listRule = list;
-    for (int i = 0; i < listRule->size(); i++){
-        listRuleLabel.append(setupRuleLabel(list->at(i), i));
+    ui->comboBox->setCurrentIndex(ruleOrgaOption);
+
+    QStringList strList;
+    for (int i  = 0; i < listRule->size(); i++){
+        strList.append(concateneRuleInfo(listRule->at(i)));
+        qDebug() << concateneRuleInfo(listRule->at(i));
     }
+
+    QStringListModel* model = new QStringListModel(this);
+    model->setStringList(strList);
+    ui->listView->setModel(model);
+    ui->listView->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);
+    ui->listView->adjustSize();
+    //    ui->listView->setMinimumSize(ui->listView->size());
+    ui->verticalLayout->setGeometry(ui->listView->geometry());
+
     show();
 }
 
 RuleOrganizer::~RuleOrganizer()
 {
-    for (int i = 0; i < listRuleLabel.size(); i++){
-        delete listRuleLabel.value(i);
-        listRuleLabel.replace(i, nullptr);
-    }
     delete ui;
 }
+
+void RuleOrganizer::on_RuleOrganizer_accepted()
+{
+    emit si_setRuleOrga(ui->comboBox->currentIndex());
+}
+
