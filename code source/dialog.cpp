@@ -41,6 +41,7 @@ void Dialog::on_buttonBox_accepted()
                 listSelected += ui->listWidget->item(i)->text();
             }
         }
+        emit si_isAndOr(m_ruleOrgaOption);
         emit si_isAllSelected(false);
         emit si_sendSelectedVar(listSelected);
     }
@@ -104,3 +105,15 @@ void Dialog::on_buttonBox_rejected()
 {
     emit si_quitApp();
 }
+
+void Dialog::on_Dialog_destroyed()
+{
+    emit si_quitApp();
+}
+
+//void Dialog::on_Dialog_finished(int result)
+//{
+//    emit si_quitApp();
+//}
+
+

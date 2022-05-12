@@ -29,6 +29,7 @@ public:
 signals :
     void si_sendSelectedVar(QStringList);
     void si_quitApp();
+    void si_isAndOr(bool);
     void si_isAllSelected(bool);
 private slots:
 
@@ -41,8 +42,8 @@ private slots:
     void on_buttonBox_rejected();
     void on_addRule_clicked();
     void on_toolButton_clicked();
-
-
+    void on_Dialog_destroyed();
+//    void on_Dialog_finished(int result);
 private:
     Ui::Dialog *ui;
     RuleOrganizer *ui_ruleOrganizer = nullptr;

@@ -56,8 +56,9 @@ bool isRuleRespected(Rule *rule, QString dataVar){
     bool flag = false;
     switch (rule->getRule()) {
     case NaN :{
+        qDebug() << "NaN" << getDataOrName(dataVar).at(VAR);
         QRegExp re("\\d*");
-        if (!(re.exactMatch(getDataOrName(dataVar).at(VAR))))
+        if ((re.exactMatch(getDataOrName(dataVar).at(VAR))))
             flag = true;
         break;
     }
@@ -148,33 +149,52 @@ bool MainWindow::isFileAccepted(QStringList dataWithVar){
     for (int i = 0; i < m_listRuleSelect->size(); i++){
         for (int j = 0; j < dataWithVar.size(); j++){
             if (m_listRuleSelect->at(i)->getVar() == getDataOrName(dataWithVar.at(j)).at(NAME)){
-                                qDebug() << "HERE " << m_listRuleSelect->at(i)->getVar() << getDataOrName(dataWithVar.at(j)).at(VAR);
+//                qDebug() << "HERE " << m_listRuleSelect->at(i)->getVar() << getDataOrName(dataWithVar.at(j)).at(VAR);
                 if (isRuleRespected(m_listRuleSelect->at(i), dataWithVar.at(j))){
                     indexRuleRespected++;
-                    qDebug() << "rule respected at i: " << i;
-                    qDebug() << "VAR ? " << getDataOrName(dataWithVar.at(j)).at(VAR);
-                    qDebug() << m_listRuleSelect->at(i)->getOption().val;
+//                    qDebug() << "rule respected at i: " << i;
+//                    qDebug() << "VAR ? " << getDataOrName(dataWithVar.at(j)).at(VAR);
+//                    qDebug() << m_listRuleSelect->at(i)->getOption().val;
 
                 }
                 else {
-                    qDebug() << "rule not respected at i: " << i;
-                    qDebug() << "VAR ? " << getDataOrName(dataWithVar.at(j)).at(VAR);
-                    qDebug() << m_listRuleSelect->at(i)->getOption().val;
+//                    qDebug() << "rule not respected at i: " << i;
+//                    qDebug() << "VAR ? " << getDataOrName(dataWithVar.at(j)).at(VAR);
+//                    qDebug() << m_listRuleSelect->at(i)->getOption().val;
                 }
             }
         }
-        //        if (!flag)
-        //            return false;
     }
-    if (indexRuleRespected == m_listRuleSelect->size()){
-        qDebug() << "rule true";
-        flag = true;
+    if (m_isAndOr == AND){
+        if (indexRuleRespected == m_listRuleSelect->size()){
+            qDebug() << "rule AND true";
+            flag = true;
+        }
+        else if (indexRuleRespected != m_listRuleSelect->size()){
+            flag = false;
+            qDebug() << "rule AND false";
+        }
     }
-    else{
-        flag = false;
-        qDebug() << "rule false";
+    else if (m_isAndOr == OR){
+        if (indexRuleRespected >= 1){
+            qDebug() << "rule OR true";
+            flag = true;
+        }
+        else if (indexRuleRespected == 0){
+            flag = false;
+            qDebug() << "rule OR false";
+        }
     }
+
     return flag;
+}
+
+void algoPacked(QString allData){                                       //Nous assumons ici que allData ne contient que les données contenues dans "content"
+
+    QString tmpAll = allData;
+    QPair<QString,QList<float>> storeData;
+
+    //    for (int i = 0; i < )
 }
 
 void MainWindow::formatFile(QStringList listSelectedVar){                                                          //Fonction permettant d'enlever les \ en trop dans les fichiers JSON ainsi que les 2 " prÃ©sent. Cette modification est necessaire pour que le scirpt python fonctionne correctement
@@ -201,7 +221,7 @@ void MainWindow::formatFile(QStringList listSelectedVar){                       
                     //                qDebug() << "meme nombre !" << m_fileJSON->fileName();
                     if (isFileAccepted(dataWithVar.split(','))){
                         QString dataFormat = formatData(regularData,listSelectedVar,dataWithVar.split(','));
-                        qDebug() << "here " << dataFormat,m_listJSON.at(i);
+                        //                        qDebug() << "here " << dataFormat,m_listJSON.at(i);
                         addModifiedFile(dataFormat,m_listJSON.at(i));                                                             //Appel fct de modification des JSON + enregistrement dans dossier
                     }
                 }

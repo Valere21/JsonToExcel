@@ -38,6 +38,7 @@ void MainWindow::getVar(){              //Fonction permettant d'isoler les varia
     connect (ui_dialog, SIGNAL(si_quitApp()), this, SLOT(sl_quitApp()));
     connect (ui_dialog, SIGNAL(si_sendSelectedVar(QStringList)), this, SLOT(sl_getSelectedVar(QStringList)));
     connect (ui_dialog, SIGNAL(si_isAllSelected(bool)), this, SLOT(sl_isAllSelected(bool)));
+    connect (ui_dialog, SIGNAL(si_isAndOr(bool)), this, SLOT(sl_isAndOr(bool)));
 
 
     if (m_listJSON.isEmpty()){
@@ -103,8 +104,13 @@ void MainWindow::sl_isAllSelected(bool flag){
     m_isAllSelected = flag;
 }
 
+void MainWindow::sl_isAndOr(bool ruleOrga){
+    m_isAndOr = ruleOrga;
+}
+
 void MainWindow::sl_getSelectedVar(QStringList listSelected){
     m_listRuleSelect = ui_dialog->getListRule();
+
     delete ui_dialog;
     ui_dialog = nullptr;
     formatFile(listSelected);

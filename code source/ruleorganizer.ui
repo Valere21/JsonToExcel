@@ -2,6 +2,14 @@
 <ui version="4.0">
  <class>RuleOrganizer</class>
  <widget class="QDialog" name="RuleOrganizer">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>230</width>
+    <height>138</height>
+   </rect>
+  </property>
   <property name="sizePolicy">
    <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
     <horstretch>0</horstretch>
@@ -38,11 +46,6 @@
      </property>
      <item>
       <widget class="QComboBox" name="comboBox">
-       <item>
-        <property name="text">
-         <string/>
-        </property>
-       </item>
        <item>
         <property name="text">
          <string>ET</string>

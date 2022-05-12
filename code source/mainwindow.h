@@ -1,6 +1,9 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#define AND 0
+#define OR  1
+
 #include <QListWidgetItem>
 #include <QMainWindow>
 #include <QFileDialog>
@@ -48,6 +51,7 @@ public slots:
     void sl_getSelectedVar(QStringList);
     void sl_quitApp(){this->~MainWindow();}
     void sl_isAllSelected(bool);
+    void sl_isAndOr(bool);
 
 private slots:
     void on_MainWindow_destroyed();
@@ -70,7 +74,7 @@ private:
     QDir m_folderModifiedJSON;
 
     bool m_isAllSelected = false;
-
+    bool m_isAndOr = 0;
 };
 
 #endif // MAINWINDOW_H
