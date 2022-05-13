@@ -1,10 +1,5 @@
 #include "mainwindow.h"
 
-
-int add(int a, int b){
-    return a+b;
-}
-
 int getNbrVar(QString pathToJson){                          //Renvoie le nombre de variable contenue dans ce fichier JSON "pathToJson"
 
     QFile *fileJSON = new QFile(pathToJson);
@@ -30,6 +25,9 @@ int getNbrVar(QString pathToJson){                          //Renvoie le nombre 
     return size;
 }
 
+
+
+
 void MainWindow::getVar(){              //Fonction permettant d'isoler les variables selectionnes par l'utilisateur (oui c'est un copie coller de la fonction format file, oui c'est pas opti, oui c'est moche, c'est moche hein)
 
     ui_dialog = new Dialog(this);
@@ -40,27 +38,34 @@ void MainWindow::getVar(){              //Fonction permettant d'isoler les varia
     connect (ui_dialog, SIGNAL(si_isAllSelected(bool)), this, SLOT(sl_isAllSelected(bool)));
     connect (ui_dialog, SIGNAL(si_isAndOr(bool)), this, SLOT(sl_isAndOr(bool)));
 
+//    connect (ui_dialog, SIGNAL(si_updateLoadingBar(int)), this, SLOT(sl_updateLoadingBar(int)));
 
     if (m_listJSON.isEmpty()){
         qDebug() << "mlistJSON empty";
         this->~MainWindow();
     }
 
-//    int indexFileMaxVar = 0;                                        //Permet d'isoler le fichier JSON avec le plus de variables
-//    for (int i = 0;  i < m_listJSON.size(); i++){
-//        if (getNbrVar(m_listJSON.at(indexFileMaxVar)) > getNbrVar(m_listJSON.at(i)))
-//            indexFileMaxVar = i;
-//    }
-
     int indexMax = 0;
+
+    float percent = 0;
     int indexSizeMaxVar = getNbrVar(m_listJSON.at(0));                                        //Permet d'isoler le fichier JSON avec le plus de variables
+//    QThread *thread = QThread::create(getNbrVar(m_listJSON.at(0)));
+
+
+    this->setWindowTitle(QString::number(percent) + " Loading JSON file");
     for (int i = 0;  i < m_listJSON.size(); i++){
         int indexAtI = getNbrVar(m_listJSON.at(i));
         if (indexAtI > indexSizeMaxVar){
             indexSizeMaxVar = indexAtI;
             indexMax = i;
         }
+        if (((100*i)/m_listJSON.size()) != percent){                                                               //Calcule le pourcentage de fichier JSON modifie
+            percent = (100*i)/m_listJSON.size();
+            ui->progressBar->setValue(percent);
+        }
     }
+
+    ui->progressBar->setValue(0);
 
 
     m_fileJSON = new QFile(m_listJSON.at(indexMax));
@@ -69,7 +74,6 @@ void MainWindow::getVar(){              //Fonction permettant d'isoler les varia
         if (!m_fileJSON->isOpen()){                              //Verifie que le fichier existe
             m_fileJSON->open(QIODevice::ReadWrite);
         }
-
 
         QString *all = new QString(m_fileJSON->readAll());
         QString *var = new QString;

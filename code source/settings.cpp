@@ -27,7 +27,6 @@ void Settings::setSettings(QString pathJsonFolder, QString pathExcelFolder){
     qDebug() << "m_settings.status()" << m_settings.status();
 }
 
-
 void Settings::removeSettings(){
 
     m_settings.remove("");

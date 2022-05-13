@@ -9,7 +9,7 @@ Rule::Rule(QStringList listVar, QWidget *parent) : QDialog(parent),ui(new Ui::Ru
     ui->listVarRes->setHidden(true);
     ui->getConst->setHidden(true);
     ui->getVar->setHidden(true);
-
+    ui->constRes->setReadOnly(false);
     show();
 }
 
@@ -78,8 +78,7 @@ void Rule::on_getConst_clicked(bool checked)
 
 void Rule::on_listVarRes_currentIndexChanged(const QString &arg1)
 {
-    qDebug() << Q_FUNC_INFO << arg1;
-    m_option.name = arg1;
+     m_option.name = arg1;
     on_getVar_clicked(true);
     ui->getVar->setCheckState(Qt::Checked);
 }
@@ -87,6 +86,7 @@ void Rule::on_listVarRes_currentIndexChanged(const QString &arg1)
 
 void Rule::on_constRes_valueChanged(double arg1)
 {
+    qDebug() << Q_FUNC_INFO;
     m_option.val = arg1;
     on_getConst_clicked(true);
     ui->getConst->setCheckState(Qt::Checked);

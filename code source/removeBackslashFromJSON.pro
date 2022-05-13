@@ -15,6 +15,7 @@ SOURCES += \
     mainSelectVar.cpp \
     mainSetting.cpp \
     mainwindow.cpp \
+    refreshprogressbar.cpp \
     rule.cpp \
     ruleorganizer.cpp \
     settings.cpp
@@ -22,6 +23,7 @@ SOURCES += \
 HEADERS += \
     dialog.h \
     mainwindow.h \
+    refreshprogressbar.h \
     rule.h \
     ruleorganizer.h \
     settings.h

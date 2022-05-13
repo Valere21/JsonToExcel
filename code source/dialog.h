@@ -27,6 +27,9 @@ public:
     ~Dialog();
 
 signals :
+
+//    void si_updateLoadingBar(int);                                                      //Met à jour la bar de chargement en fonction de la première lecture des fichiers JSON. Cette lecture sert à recueillir les noms de variables
+
     void si_sendSelectedVar(QStringList);
     void si_quitApp();
     void si_isAndOr(bool);

@@ -9,6 +9,7 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QProcess>
+#include <QThread>
 #include <QDebug>
 #include <QPair>
 #include <QFile>
@@ -18,6 +19,7 @@
 #include "dialog.h"
 #include "settings.h"
 #include "ui_mainwindow.h"
+#include "refreshprogressbar.h"
 
 
 QT_BEGIN_NAMESPACE
@@ -54,8 +56,11 @@ public slots:
     void sl_isAndOr(bool);
 
 private slots:
+
     void on_MainWindow_destroyed();
     void sl_onProcessStateChanged();
+//    void sl_updateLoadingBar(int);
+
 private:
     Ui::MainWindow *ui = nullptr;
     Dialog *ui_dialog = nullptr;

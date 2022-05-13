@@ -4,7 +4,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     ui->setupUi(this);
     ui->progressBar->setRange(0,100);
     ui->progressBar->setValue(0);
-    this->setWindowTitle("Modification des fichiers JSON en cours");
+//    this->setWindowTitle("Modification des fichiers JSON en cours");
     show();
     ui_settings = new Settings;
     getPath();    
@@ -82,7 +82,6 @@ MainWindow::~MainWindow()
     delete ui;
 
     delete m_processPythonScript;
-    qDebug() << "About to quit";
     QApplication::quit();
     exit(0);
 }
