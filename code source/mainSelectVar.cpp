@@ -26,6 +26,14 @@ int getNbrVar(QString pathToJson){                          //Renvoie le nombre 
 }
 
 
+void MainWindow::sl_getThreadUpdatePercent(int newPercent){
+    qDebug() << Q_FUNC_INFO;
+    ui->progressBar->setValue(newPercent);
+}
+
+void MainWindow::sl_getThreadMaxIndex(int indexMax){
+    m_indexMaxFromThread = indexMax;
+}
 
 
 void MainWindow::getVar(){              //Fonction permettant d'isoler les variables selectionnes par l'utilisateur (oui c'est un copie coller de la fonction format file, oui c'est pas opti, oui c'est moche, c'est moche hein)
@@ -45,30 +53,54 @@ void MainWindow::getVar(){              //Fonction permettant d'isoler les varia
         this->~MainWindow();
     }
 
-    int indexMax = 0;
 
-    float percent = 0;
-    int indexSizeMaxVar = getNbrVar(m_listJSON.at(0));                                        //Permet d'isoler le fichier JSON avec le plus de variables
-//    QThread *thread = QThread::create(getNbrVar(m_listJSON.at(0)));
+    ///////////////
 
 
-    this->setWindowTitle(QString::number(percent) + " Loading JSON file");
-    for (int i = 0;  i < m_listJSON.size(); i++){
-        int indexAtI = getNbrVar(m_listJSON.at(i));
-        if (indexAtI > indexSizeMaxVar){
-            indexSizeMaxVar = indexAtI;
-            indexMax = i;
-        }
-        if (((100*i)/m_listJSON.size()) != percent){                                                               //Calcule le pourcentage de fichier JSON modifie
-            percent = (100*i)/m_listJSON.size();
-            ui->progressBar->setValue(percent);
-        }
-    }
+    m_threadGetIndexSize = new RefreshProgressBar(m_listJSON);
+
+    this->setWindowTitle("Loading JSON file");
+    connect (m_threadGetIndexSize, SIGNAL(si_getThreadUpdatePercent(int)), this, SLOT(sl_getThreadUpdatePercent(int)));
+    connect (m_threadGetIndexSize, SIGNAL(si_getThreadMaxIndex(int)), this, SLOT(sl_getThreadMaxIndex(int)));
+
+//    void si_getThreadMaxIndex(int);
+
+    m_threadGetIndexSize->start();
+    m_threadGetIndexSize->wait();
+
+    delete m_threadGetIndexSize;
+    m_threadGetIndexSize = nullptr;
+
+
+//    int indexMax = 0;
+//    float percent = 0;
+//    int indexSizeMaxVar = getNbrVar(m_listJSON.at(0));                                        //Permet d'isoler le fichier JSON avec le plus de variables
+////    QThread *thread = QThread::create(getNbrVar(m_listJSON.at(0)));
+
+
+//    this->setWindowTitle(QString::number(percent) + " Loading JSON file");
+//    for (int i = 0;  i < m_listJSON.size(); i++){
+//        int indexAtI = getNbrVar(m_listJSON.at(i));
+//        if (indexAtI > indexSizeMaxVar){
+//            indexSizeMaxVar = indexAtI;
+//            indexMax = i;
+//        }
+//        if (((100*i)/m_listJSON.size()) != percent){                                                               //Calcule le pourcentage de fichier JSON modifie
+//            percent = (100*i)/m_listJSON.size();
+//            ui->progressBar->setValue(percent);
+//        }
+//    }
+
+    ///////////////////////
+
+
 
     ui->progressBar->setValue(0);
 
 
-    m_fileJSON = new QFile(m_listJSON.at(indexMax));
+//    m_fileJSON = new QFile(m_listJSON.at(indexMax));
+    m_fileJSON = new QFile(m_listJSON.at(m_indexMaxFromThread));
+
 
     if (m_fileJSON->exists()){                           //Ouvre les fichiers afin de manipuler leurs donnee
         if (!m_fileJSON->isOpen()){                              //Verifie que le fichier existe

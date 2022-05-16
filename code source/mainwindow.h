@@ -55,12 +55,12 @@ public slots:
     void sl_isAllSelected(bool);
     void sl_isAndOr(bool);
 
+    void sl_getThreadUpdatePercent(int newPercent);
+    void sl_getThreadMaxIndex(int maxIndex);
+
 private slots:
-
     void on_MainWindow_destroyed();
-    void sl_onProcessStateChanged();
-//    void sl_updateLoadingBar(int);
-
+    void sl_onProcessStateChanged();   
 private:
     Ui::MainWindow *ui = nullptr;
     Dialog *ui_dialog = nullptr;
@@ -72,6 +72,9 @@ private:
     QFile *m_fileJSONModified = nullptr;
     QProcess *m_processPythonScript = nullptr;
 
+//    QThread *m_threadGetIndexSize = nullptr;
+    RefreshProgressBar *m_threadGetIndexSize = nullptr;
+
     QDir m_folderJSON;
     QStringList m_listVar;
     QStringList m_listJSON;
@@ -80,6 +83,9 @@ private:
 
     bool m_isAllSelected = false;
     bool m_isAndOr = 0;
+
+    int m_indexMaxFromThread = 0;
+
 };
 
 #endif // MAINWINDOW_H
