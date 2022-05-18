@@ -1,29 +1,31 @@
 #ifndef REFRESHPROGRESSBAR_H
 #define REFRESHPROGRESSBAR_H
 
+#define SIMPLE_THREAD   0
+#define MULTIPLE_THREAD 1
+
 #include <QObject>
 #include <QThread>
 #include <QDebug>
 #include <QFile>
-class RefreshProgressBar : public QThread
+class RefreshProgressBar : public QObject
 {
 
     Q_OBJECT
 public:
-    RefreshProgressBar(QStringList listJSON);
+    explicit RefreshProgressBar(QString pathJson, int numeroThread) : m_fileJson(pathJson), m_numeroThread(numeroThread){}
+//    explicit RefreshProgressBar(QString pathJson, int numeroThread) : m_fileJson(pathJson), m_numeroThread(numeroThread){};
 
-    void run() override;
-    void getIndexMax(QStringList listJSON);
-    int getNbr(QString pathToJson);
+//    void run() override;
+    void getIndex();
 
 signals:
 
-    void si_getThreadUpdatePercent(int newPercent);
-    void si_getThreadMaxIndex(int maxIndex);
+    void si_getThreadIndex(int index, int numeroThread);
 
 private:
-
-    QStringList m_listJSON;
+    QFile m_fileJson;
+    float m_numeroThread = 0;
 };
 
 #endif // REFRESHPROGRESSBAR_H

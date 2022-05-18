@@ -1,0 +1,15 @@
+release/dialog.o
+release/main.o
+release/mainRefactor.o
+release/mainSelectVar.o
+release/mainSetting.o
+release/mainwindow.o
+release/refreshprogressbar.o
+release/rule.o
+release/ruleorganizer.o
+release/settings.o
+release/moc_dialog.o
+release/moc_mainwindow.o
+release/moc_refreshprogressbar.o
+release/moc_rule.o
+release/moc_ruleorganizer.o

@@ -27,7 +27,7 @@ private slots:
     void on_RuleOrganizer_accepted();
 
 private:
-    Ui::RuleOrganizer *ui;
+    Ui::RuleOrganizer *ui;    
 };
 
 #endif // RULEORGANIZER_H
